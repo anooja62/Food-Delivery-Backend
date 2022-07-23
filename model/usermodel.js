@@ -6,19 +6,19 @@ const userSchema=mongoose.Schema({
           require: true,
           min:3,
           max:20,
-          unique:true
+         
       },
       phone:{
           type:Number,
           require:true,
-          max:10,
-          unique:true
+       
+          
 
       },
       email:{
           type:String,
           require:true,
-          unique:true,
+          
           max:50
       },
       
@@ -27,11 +27,7 @@ const userSchema=mongoose.Schema({
           require:true,
           min:6
       },
-      re_enterpassword:{
-        type:String,
-        require:true,
-        min:6
-      }
+     
      
 
 
