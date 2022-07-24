@@ -9,12 +9,13 @@ const userSchema=mongoose.Schema({
          
       },
       phone:{
-          type:Number,
-          require:true,
-       
-          
-
-      },
+        type:String,
+        require:true,
+        max:11,
+        
+        
+    },
+      
       email:{
           type:String,
           require:true,
@@ -25,7 +26,7 @@ const userSchema=mongoose.Schema({
       password:{
           type:String,
           require:true,
-          min:6
+          min:5
       },
      
      
