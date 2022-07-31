@@ -46,4 +46,35 @@ router.post("/login", async (req, res) => {
     res.status(500).send({ message: err });
   }
 });
+
+
+
+//UPDATE PROFILE
+
+router.put('/profile/update',(async (req, res) => {
+    const user = await user.findById(req.user.id);
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+      //This will encrypt automatically in our model
+      if (req.body.password) {
+        user.password = req.body.password || user.password;
+      }
+      const updateUser = await user.save();
+      res.json({
+        _id: updateUser._id,
+        name: updateUser.name,
+        password: updateUser.password,
+        email: updateUser.email,
+       
+      });
+    } else {
+      res.status(401);
+      throw new Error('User Not found');
+    }
+  })
+);
+
+
+
 module.exports = router;
