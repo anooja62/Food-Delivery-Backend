@@ -57,9 +57,7 @@ router.put('/profile/update',(async (req, res) => {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
       //This will encrypt automatically in our model
-      if (req.body.password) {
-        user.password = req.body.password || user.password;
-      }
+      
       const updateUser = await user.save();
       res.json({
         _id: updateUser._id,

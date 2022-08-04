@@ -8,6 +8,10 @@ const userSchema=mongoose.Schema({
           max:20,
          
       },
+      isAdmin:{
+        type:Boolean,
+        
+      },
       phone:{
         type:String,
         require:true,
@@ -28,7 +32,10 @@ const userSchema=mongoose.Schema({
           require:true,
           min:5
       },
-     
+     role:{
+        type:Number,
+        
+     }
      
 
 
