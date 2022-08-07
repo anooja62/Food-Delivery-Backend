@@ -27,7 +27,9 @@ router.post("/add-restaurent", async (req, res) => {
 
   router.get("/all-restaurent",  async (req,res)=>{
     try {
-    const allRestaturent = await restaurant.find()
+    const allRestaturent = await restaurant.find({
+      isApproved:0
+    })
    
     res.status(200).json(allRestaturent);
     } catch(err) {
@@ -42,7 +44,10 @@ router.put("/approve/:id", async (req,res) => {
               const restaurants = await restaurant.findByIdAndUpdate(req.params.id,{
                 isApproved:1
               })
-              res.status(200).json(" updated",)
+              const allRestaturent = await restaurant.find({
+                isApproved: 0,
+              });
+              res.status(200).json(allRestaturent);
           }catch(err){
               return res.status(500).json(err);
           }
