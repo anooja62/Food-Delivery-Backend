@@ -1,47 +1,47 @@
 const mongoose = require("mongoose");
 
-const userSchema=mongoose.Schema({
-     name:{
-          type:String,
-          require: true,
-          min:3,
-          max:20,
-         
-      },
-      isAdmin:{
-        type:Boolean,
-        
-      },
-      phone:{
-        type:String,
-        require:true,
-        max:11,
-        
-        
-    },
-      
-      email:{
-          type:String,
-          require:true,
-          
-          max:50
-      },
-      
-      password:{
-          type:String,
-          require:true,
-          min:5
-      },
-     role:{
-        type:Number,
-        
-     }
-     
+const userSchema = mongoose.Schema({
+  name: {
+    type: String,
+
+    min: 3,
+    max: 20,
+
+  },
+  isAdmin: {
+    type: Boolean,
+
+  },
+  phone: {
+    type: String,
+
+    max: 11,
 
 
-    
+  },
+
+  email: {
+    type: String,
+
+
+    max: 50
+  },
+
+  password: {
+    type: String,
+
+    min: 5
+  },
+  role: {
+    type: Number,
+
+  }
+
+
+
+
 });
 
 
 
-module.exports = mongoose.model("Registeration",userSchema)
+module.exports = mongoose.model("Registeration", userSchema)

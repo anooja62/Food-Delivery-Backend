@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const restaurantSchema=mongoose.Schema({
+const deliveryboySchema=mongoose.Schema({
      name:{
           type:String,
           require: true,
@@ -29,6 +29,9 @@ const restaurantSchema=mongoose.Schema({
         require:true,
         min:5
     },
+    city:{
+        type:String
+    },
     
     isApproved:{
         type:Number,
@@ -42,4 +45,4 @@ const restaurantSchema=mongoose.Schema({
 
 
 
-module.exports = mongoose.model("Delivery",restaurantSchema)
+module.exports = mongoose.model("Delivery",deliveryboySchema)

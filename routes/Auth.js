@@ -11,10 +11,10 @@ router.post("/register", async (req, res) => {
     //create new user
     const newUser = new user({
       name: req.body.name,
-      phone:req.body.phone,
+      phone: req.body.phone,
       email: req.body.email,
       password: hashedPassword,
-      
+
     });
 
     //save user return response
@@ -51,26 +51,33 @@ router.post("/login", async (req, res) => {
 
 //UPDATE PROFILE
 
-router.put('/profile/update',(async (req, res) => {
-    const user = await user.findById(req.user.id);
-    if (user) {
-      user.name = req.body.name || user.name;
-      user.email = req.body.email || user.email;
-      //This will encrypt automatically in our model
-      
-      const updateUser = await user.save();
-      res.json({
-        _id: updateUser._id,
-        name: updateUser.name,
-        password: updateUser.password,
-        email: updateUser.email,
-       
-      });
-    } else {
-      res.status(401);
-      throw new Error('User Not found');
+router.put('/update/:id', (async (req, res) => {
+  try {
+    //generate new password
+    let hashedPassword
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      hashedPassword = await bcrypt.hash(req.body.password, salt);
     }
-  })
+
+
+    const registerations = await user.findByIdAndUpdate(req.params.id, {
+      name: req.body.name,
+      phone: req.body.phone,
+      email: req.body.email,
+      password: hashedPassword,
+    })
+
+    //save user return response
+
+
+    res.status(201).json("updated");
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+
+})
 );
 
 
