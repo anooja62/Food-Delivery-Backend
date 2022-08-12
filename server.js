@@ -4,6 +4,8 @@ const Cors = require("cors")
 const authRoutes = require("./routes/Auth");
 const restaurantRoutes = require("./routes/restaurant")
 const deliveryRoutes = require("./routes/Delivery");
+const reviewRoutes = require("./routes/Review");
+
 
 //app config
 const app = express();
@@ -27,6 +29,7 @@ mongoose.connect(MONGO_URI, {
 app.use("/auth",authRoutes);
 app.use("/rest",restaurantRoutes)
 app.use("/deli",deliveryRoutes);
+app.use("/revi",reviewRoutes)
 
 
 app.listen(port, ()=> {

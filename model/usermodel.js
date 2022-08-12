@@ -32,10 +32,7 @@ const userSchema = mongoose.Schema({
 
     min: 5
   },
-  role: {
-    type: Number,
-
-  }
+ 
 
 
 

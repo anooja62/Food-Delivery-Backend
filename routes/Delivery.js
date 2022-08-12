@@ -8,7 +8,7 @@ router.post("/delivery", async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    //create new user
+    //create new deliveryboy
     const newDeliveryboy = new deliveryboy({
       name: req.body.name,
       phone:req.body.phone,
@@ -27,10 +27,6 @@ router.post("/delivery", async (req, res) => {
     console.log(err);
   }
 });
-
-
-
-
 
 
 
