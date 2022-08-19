@@ -9,6 +9,8 @@ const addressRoutes = require("./routes/Address");
 
 
 
+
+
 //app config
 const app = express();
 const port =  9000;
@@ -33,6 +35,8 @@ app.use("/rest",restaurantRoutes)
 app.use("/deli",deliveryRoutes);
 app.use("/revi",reviewRoutes)
 app.use("/addr",addressRoutes)
+
+
 
 
 app.listen(port, ()=> {

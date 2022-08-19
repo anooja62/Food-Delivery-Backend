@@ -29,6 +29,49 @@ router.post("/delivery", async (req, res) => {
 });
 
 
+router.get("/all-deliveryboy",  async (req,res)=>{
+  try {
+  const allDeliveryboy = await deliveryboy.find({
+    isApproved:0
+  })
+ 
+  res.status(200).json(allDeliveryboy);
+  } catch(err) {
+      res.status(500).json(err);
+      console.log(err);
+  }
+})
+
+router.put("/approve/:id", async (req,res) => {
+
+        try{
+            const deliveryboys = await deliveryboy.findByIdAndUpdate(req.params.id,{
+              isApproved:1
+            })
+            const allDeliveryboy = await deliveryboy.find({
+              isApproved: 0,
+            });
+            res.status(200).json(allDeliveryboy);
+        }catch(err){
+            return res.status(500).json(err);
+        }
+
+})
+
+router.put("/reject/:id", async (req,res) => {
+
+try{
+    const deliveryboys = await deliveryboy.findByIdAndUpdate(req.params.id,{
+      isApproved:0
+    })
+    res.status(200).json("updated",)
+}catch(err){
+    return res.status(500).json(err);
+}
+
+})
+
+
 
 
 module.exports = router;
