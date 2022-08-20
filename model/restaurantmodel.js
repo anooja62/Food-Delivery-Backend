@@ -29,7 +29,7 @@ const restaurantSchema=mongoose.Schema({
           require:true,
           min:5
       },
-    isApproved:{
+    isRejected:{
         type:Number,
         default:0
     }
