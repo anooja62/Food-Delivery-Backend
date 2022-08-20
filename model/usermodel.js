@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema({
   },
   phone: {
     type: String,
-
+   unique:true,
     max: 11,
 
 
@@ -22,7 +22,7 @@ const userSchema = mongoose.Schema({
 
   email: {
     type: String,
-
+    unique:true,
 
     max: 50
   },
