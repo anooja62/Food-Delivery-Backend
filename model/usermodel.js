@@ -34,7 +34,10 @@ const userSchema = mongoose.Schema({
   },
  
 
-
+  isBlocked:{
+    type:Number,
+    default:0
+}
 
 
 });

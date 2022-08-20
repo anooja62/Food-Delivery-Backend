@@ -6,7 +6,7 @@ const restaurantRoutes = require("./routes/restaurant")
 const deliveryRoutes = require("./routes/Delivery");
 const reviewRoutes = require("./routes/Review");
 const addressRoutes = require("./routes/Address");
-
+const mailserviceRoutes = require("./routes/Mailservice");
 
 
 
@@ -35,6 +35,7 @@ app.use("/rest",restaurantRoutes)
 app.use("/deli",deliveryRoutes);
 app.use("/revi",reviewRoutes)
 app.use("/addr",addressRoutes)
+app.use("/mail",mailserviceRoutes);
 
 
 

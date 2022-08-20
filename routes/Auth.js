@@ -80,6 +80,35 @@ router.put('/update/:id', (async (req, res) => {
 })
 );
 
+router.get("/all-user",  async (req,res)=>{
+  try {
+  const allUser = await user.find({
+    isBlocked:0
+  })
+ 
+  res.status(200).json(allUser);
+  } catch(err) {
+      res.status(500).json(err);
+      console.log(err);
+  }
+})
+router.put("/block/:id", async (req,res) => {
+
+  try{
+      const users = await user.findByIdAndUpdate(req.params.id,{
+        isBlocked:1
+      })
+      const allUser = await user.find({
+        isBlocked: 0,
+      });
+      res.status(200).json(allUser);
+  }catch(err){
+      return res.status(500).json(err);
+  }
+
+})
+
+
 
 
 module.exports = router;
