@@ -28,8 +28,11 @@ const shippingSchema=mongoose.Schema({
         type:String,
         require:true,
         min:5
-    }
-   
+    },
+   userId:{
+    type:String,
+    require:true
+   }
 
 
     

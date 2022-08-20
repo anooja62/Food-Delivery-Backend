@@ -31,8 +31,11 @@ router.post("/login", async (req, res) => {
   try {
     const users = await user.findOne({ email: req.body.email });
     !users && res.status(404).json("User not found");
+     
+      const blockedUser = await user.findOne({ isBlocked:1 ,email: req.body.email});
+      blockedUser && res.status(404).json("Access denied")
     
-    if (users) {
+    if (users && !blockedUser) {
       const validPassword = await bcrypt.compare(
         req.body.password,
         users.password

@@ -32,7 +32,8 @@ const restaurantSchema=mongoose.Schema({
     isRejected:{
         type:Number,
         default:0
-    }
+    },
+  
      
 
 

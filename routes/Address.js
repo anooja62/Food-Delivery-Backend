@@ -9,7 +9,8 @@ router.post("/address", async (req, res) => {
       name: req.body.name,
       phone:req.body.phone,
       pincode: req.body.pincode,
-      address:req.body.address
+      address:req.body.address,
+      userId:req.body.userId
       
     });
 
