@@ -24,16 +24,12 @@ const deliveryboySchema=mongoose.Schema({
           max:50
       },
       
-      password:{
-        type:String,
-        require:true,
-        min:5
-    },
+  
     city:{
         type:String
     },
     
-    isApproved:{
+    isRejected:{
         type:Number,
         default:0
     }

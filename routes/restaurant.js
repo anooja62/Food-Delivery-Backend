@@ -1,20 +1,19 @@
 const router = require("express").Router();
 const restaurant = require("../model/restaurantmodel");
-const bcrypt = require("bcrypt");
+
 
 
 router.post("/add-restaurent", async (req, res) => {
     try {
       
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(req.body.password, salt);
+     
       //create new user
       const newRestaurent = new restaurant({
         name: req.body.name,
         phone:req.body.phone,
         email: req.body.email,
         address:req.body.address,
-        password: hashedPassword,
+       
         
       });
   

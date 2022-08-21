@@ -1,20 +1,17 @@
 const router = require("express").Router();
 const deliveryboy = require("../model/deliverymodel");
-const bcrypt = require("bcrypt");
+
 
 router.post("/delivery", async (req, res) => {
   try {
-    //generate new password
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+   
     //create new deliveryboy
     const newDeliveryboy = new deliveryboy({
       name: req.body.name,
       phone:req.body.phone,
       email: req.body.email,
       city:req.body.city,
-      password: hashedPassword,
+     
       
     });
 
@@ -32,7 +29,7 @@ router.post("/delivery", async (req, res) => {
 router.get("/all-deliveryboy",  async (req,res)=>{
   try {
   const allDeliveryboy = await deliveryboy.find({
-    isApproved:0
+    isRejected:0
   })
  
   res.status(200).json(allDeliveryboy);
@@ -42,14 +39,14 @@ router.get("/all-deliveryboy",  async (req,res)=>{
   }
 })
 
-router.put("/approve/:id", async (req,res) => {
+router.put("/reject/:id", async (req,res) => {
 
         try{
             const deliveryboys = await deliveryboy.findByIdAndUpdate(req.params.id,{
-              isApproved:1
+              isRejected:1
             })
             const allDeliveryboy = await deliveryboy.find({
-              isApproved: 0,
+              isRejected: 0,
             });
             res.status(200).json(allDeliveryboy);
         }catch(err){
@@ -58,18 +55,6 @@ router.put("/approve/:id", async (req,res) => {
 
 })
 
-router.put("/reject/:id", async (req,res) => {
-
-try{
-    const deliveryboys = await deliveryboy.findByIdAndUpdate(req.params.id,{
-      isApproved:0
-    })
-    res.status(200).json("updated",)
-}catch(err){
-    return res.status(500).json(err);
-}
-
-})
 
 
 

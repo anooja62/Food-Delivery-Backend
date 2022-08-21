@@ -32,7 +32,12 @@ const shippingSchema=mongoose.Schema({
    userId:{
     type:String,
     require:true
-   }
+   },
+   isDeleted:{
+    type:Number,
+    default:0
+}
+
 
 
     
