@@ -40,10 +40,10 @@ router.get("/all-addresses",  async (req,res)=>{
 router.put("/deleted/:id", async (req,res) => {
 
         try{
-            const ship = await restaurant.findByIdAndUpdate(req.params.id,{
+            const ship = await shipping.findByIdAndUpdate(req.params.id,{
               isDeleted:1
             })
-            const allRestaturent = await restaurant.find({
+            const allShipping = await shipping.find({
               isDeleted: 0,
             });
             res.status(200).json(allShipping);
