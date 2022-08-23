@@ -21,7 +21,7 @@ const shippingSchema=mongoose.Schema({
           type:String,
           require:true,
           
-          max:50
+         
       },
       
       address:{

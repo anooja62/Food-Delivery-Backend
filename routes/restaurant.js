@@ -13,6 +13,7 @@ router.post("/add-restaurent", async (req, res) => {
         phone:req.body.phone,
         email: req.body.email,
         address:req.body.address,
+        imgUrl:req.body.imgUrl
        
         
       });

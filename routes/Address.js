@@ -24,9 +24,9 @@ router.post("/address", async (req, res) => {
   }
 });
 
-router.get("/all-addresses",  async (req,res)=>{
+router.get(`/all-addresses`,  async (req,res)=>{
   try {
-  const allShipping = await shipping.find({
+  const allShipping = await shipping.findById(req.params.id,{
     isDeleted:0
   })
  

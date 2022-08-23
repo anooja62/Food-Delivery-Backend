@@ -11,6 +11,7 @@ router.post("/delivery", async (req, res) => {
       phone:req.body.phone,
       email: req.body.email,
       city:req.body.city,
+      imgUrl:req.body.imgUrl
      
       
     });

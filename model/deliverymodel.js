@@ -32,6 +32,10 @@ const deliveryboySchema=mongoose.Schema({
     isRejected:{
         type:Number,
         default:0
+    },
+    imgUrl:{
+        type:String,
+        require:true,
     }
      
 

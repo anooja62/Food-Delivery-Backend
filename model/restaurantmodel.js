@@ -29,10 +29,14 @@ const restaurantSchema=mongoose.Schema({
           require:true,
           min:5
       },
+     
     isRejected:{
         type:Number,
         default:0
     },
+    imgUrl:{
+        type:String
+    }
   
      
 
