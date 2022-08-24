@@ -13,20 +13,22 @@ router.post("/address", async (req, res) => {
       userId:req.body.userId
       
     });
-
-    //save user return response
-
     const ship = await newShipping.save();
-    res.status(201).json(ship);
+    //save user return response
+    const allShipping = await shipping.find({  userId:req.body.userId,
+      isDeleted:0
+    })
+    
+    res.status(201).json(allShipping);
   } catch (err) {
     res.status(500).json(err);
     console.log(err);
   }
 });
 
-router.get(`/all-addresses`,  async (req,res)=>{
+router.get(`/all-addresses/:id`,  async (req,res)=>{
   try {
-  const allShipping = await shipping.findById(req.params.id,{
+  const allShipping = await shipping.find({ userId:req.params.id,
     isDeleted:0
   })
  

@@ -6,42 +6,33 @@ const userSchema = mongoose.Schema({
 
     min: 3,
     max: 20,
-
   },
   isAdmin: {
     type: Boolean,
-
   },
   phone: {
     type: String,
-   unique:true,
+    unique: true,
     max: 11,
-
-
   },
 
   email: {
     type: String,
-    unique:true,
+    unique: true,
 
-    max: 50
+    max: 50,
   },
 
   password: {
     type: String,
 
-    min: 5
+    min: 5,
   },
- 
 
-  isBlocked:{
-    type:Number,
-    default:0
-}
-
-
+  isBlocked: {
+    type: Number,
+    default: 0,
+  },
 });
 
-
-
-module.exports = mongoose.model("Registeration", userSchema)
+module.exports = mongoose.model("Registeration", userSchema);
