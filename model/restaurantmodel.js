@@ -36,8 +36,12 @@ const restaurantSchema=mongoose.Schema({
     },
     imgUrl:{
         type:String
-    }
-  
+    },
+    password: {
+        type: String,
+    
+        min: 5,
+      },
      
 
 
