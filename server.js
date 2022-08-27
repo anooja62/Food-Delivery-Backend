@@ -1,11 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Cors = require("cors")
+
 const authRoutes = require("./routes/Auth");
 const restaurantRoutes = require("./routes/restaurant")
 const deliveryRoutes = require("./routes/Delivery");
 const reviewRoutes = require("./routes/Review");
 const addressRoutes = require("./routes/Address");
+const foodRoutes = require("./routes/Food");
 
 
 
@@ -35,6 +37,7 @@ app.use("/rest",restaurantRoutes)
 app.use("/deli",deliveryRoutes);
 app.use("/revi",reviewRoutes)
 app.use("/addr",addressRoutes)
+app.use("/food",foodRoutes)
 
 
 

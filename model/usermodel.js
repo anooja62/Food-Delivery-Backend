@@ -18,7 +18,7 @@ const userSchema = mongoose.Schema({
 
   email: {
     type: String,
-    unique: true,
+   
 
     max: 50,
   },
@@ -33,6 +33,9 @@ const userSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  otp:{
+    type:Number,
+  }
 });
 
 module.exports = mongoose.model("Registeration", userSchema);
