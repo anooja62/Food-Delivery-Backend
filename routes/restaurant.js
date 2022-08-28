@@ -23,6 +23,49 @@ router.post("/add-restaurent", async (req, res) => {
     console.log(err);
   }
 });
+//restaurant login
+router.post("/rest-login", async (req, res) => {
+  try {
+    const rest = await restaurant.findOne({ email: req.body.email });
+    !rest && res.status(404).json("User not found");
+
+
+
+    if (rest) {
+      const validPassword = await bcrypt.compare(
+        req.body.password,
+        rest.password
+      );
+      !validPassword && res.status(400).json("wrong password");
+      if (validPassword) {
+        const { password, ...others } = rest._doc;
+        res.status(200).json(others);
+      }
+    }
+  } catch (err) {
+    res.status(500).send({ message: err });
+  }
+});
+
+router.put("/restaurent-pw-update", async (req, res) => {
+
+  try {
+    console.log(req.body)
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    // update pw restaurant
+    const rest = await restaurant.findOne({ email: req.body.email })
+    const id = rest._id
+console.log(rest._id)
+    const psw = await restaurant.findByIdAndUpdate(id, {
+      password:hashedPassword,
+    });
+    res.status(201).json(psw);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+});
 
 router.get("/all-restaurent", async (req, res) => {
   try {

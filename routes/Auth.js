@@ -112,17 +112,18 @@ router.put("/block/:id", async (req, res) => {
 router.put("/send-otp", async (req, res) => {
   const _otp = Math.floor(100000 + Math.random() * 900000);
 
-  const users = await users.findOne({ email: req.body.email });
+  // const users = await users.findOne({ email: req.body.email });
 
-  // send to user mail
-  if (!users) {
-    res.send({ code: 500, message: "user not found" });
-  }
+  // // send to user mail
+  // if (!users) {
+  //   res.send({ code: 500, message: "user not found" });
+  // }
 
   let testAccount = await nodemailer.createTestAccount()
+
   let transporter = nodemailer.createTransport({
-    host: "gmail",
-    port: 587,
+    host: "https://mail.google.com/mail",
+    // port: 587,
     
     auth: {
       user: "deliorderfoods@gmail.com",
@@ -138,8 +139,8 @@ router.put("/send-otp", async (req, res) => {
 
   if (info.messageId) {
     console.log(info, 84);
-    users
-      .updateOne({ email: req.body.email }, { otp: _otp })
+    user
+      .updateOne({ email: req.body.email,otp: _otp})
       .then((result) => {
         res.send({ code: 200, message: "otp send" });
       })
