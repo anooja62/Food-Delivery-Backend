@@ -13,7 +13,8 @@ router.post("/add-restaurent", async (req, res) => {
       email: req.body.email,
       address: req.body.address,
       imgUrl: req.body.imgUrl,
-      password:hashedPassword,
+     
+     
     });
 
     const rest = await newRestaurent.save();
@@ -53,12 +54,13 @@ router.put("/restaurent-pw-update", async (req, res) => {
     console.log(req.body)
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    // update pw restaurant
+    // update pwd restaurant
     const rest = await restaurant.findOne({ email: req.body.email })
     const id = rest._id
-console.log(rest._id)
+
     const psw = await restaurant.findByIdAndUpdate(id, {
       password:hashedPassword,
+      
     });
     res.status(201).json(psw);
   } catch (err) {
@@ -66,6 +68,43 @@ console.log(rest._id)
     console.log(err);
   }
 });
+
+//UPDATE restaurant
+
+router.put("/update-res/:id", async (req, res) => {
+  try {
+    //generate new password
+    let hashedPassword;
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      hashedPassword = await bcrypt.hash(req.body.password, salt);
+    }
+
+    const rest = await restaurant.findByIdAndUpdate(req.params.id, {
+      name: req.body.name,
+      phone: req.body.phone,
+      email: req.body.email,
+      password: hashedPassword,
+      license:req.body.license,
+      about:req.body.about,
+      issuedate:req.body.issuedate,
+      expiredate:req.body.expiredate,
+      licensetype:req.body.licensetype,
+      ownername:req.body.ownername,
+      ownerphone:req.body.ownerphone,
+
+    });
+
+    //save user return response
+
+    res.status(201).json("updated");
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+});
+
+ 
 
 router.get("/all-restaurent", async (req, res) => {
   try {

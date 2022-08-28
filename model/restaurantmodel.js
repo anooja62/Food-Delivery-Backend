@@ -1,53 +1,63 @@
 const mongoose = require("mongoose");
 
-const restaurantSchema=mongoose.Schema({
-     name:{
-          type:String,
-          require: true,
-          min:3,
-          max:20,
-         
-      },
-    
-      phone:{
-        type:String,
-        require:true,
-        max:11,
-        
-        
-    },
-      
-      email:{
-          type:String,
-          require:true,
-          
-          max:50
-      },
-      
-      address:{
-          type:String,
-          require:true,
-          min:5
-      },
-     
-    isRejected:{
-        type:Number,
-        default:0
-    },
-    imgUrl:{
-        type:String
-    },
-    password: {
-        type: String,
-    
-        min: 5,
-      },
-     
+const restaurantSchema = mongoose.Schema({
+  name: {
+    type: String,
 
+    min: 3,
+  },
+  license: {
+    type: String,
+  },
+  issuedate:{
+    type:String,
+  },
+  expiredate:{
+    type:String,
+  },
+  licensetype:{
+    type:String,
+  },
 
-    
+  phone: {
+    type: String,
+
+    max: 11,
+  },
+
+  email: {
+    type: String,
+
+    max: 50,
+  },
+
+  address: {
+    type: String,
+
+    min: 5,
+  },
+
+  isRejected: {
+    type: Number,
+    default: 0,
+  },
+  imgUrl: {
+    type: String,
+  },
+  password: {
+    type: String,
+
+    min: 5,
+  },
+  about: {
+    type: String,
+  },
+  ownername:{
+    type:String,
+  },
+  ownerphone:{
+    type:String,
+  }
 });
 
-
-
-module.exports = mongoose.model("Restaurant",restaurantSchema)
+module.exports = mongoose.model("Restaurant", restaurantSchema);
