@@ -103,15 +103,29 @@ router.put("/update-res/:id", async (req, res) => {
   }
 });
 
- 
-
-router.get("/all-restaurent", async (req, res) => {
+ //get resturant details
+ router.get(`/res-details/:id`, async (req, res) => {
   try {
-    const allRestaturent = await restaurant.find({
+    const allRestaurent = await restaurant.find({ restaurantId:req.params.id,
       isRejected: 0,
     });
 
-    res.status(200).json(allRestaturent);
+    res.status(200).json(allRestaurent);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+});
+
+
+
+router.get("/all-restaurent", async (req, res) => {
+  try {
+    const allRestaurent = await restaurant.find({
+      isRejected: 0,
+    });
+
+    res.status(200).json(allRestaurent);
   } catch (err) {
     res.status(500).json(err);
     console.log(err);
@@ -123,10 +137,10 @@ router.put("/reject/:id", async (req, res) => {
     const restaurants = await restaurant.findByIdAndUpdate(req.params.id, {
       isRejected: 1,
     });
-    const allRestaturent = await restaurant.find({
+    const allRestaurent = await restaurant.find({
       isRejected: 0,
     });
-    res.status(200).json(allRestaturent);
+    res.status(200).json(allRestaurent);
   } catch (err) {
     return res.status(500).json(err);
   }

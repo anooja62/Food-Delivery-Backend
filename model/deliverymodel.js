@@ -36,7 +36,12 @@ const deliveryboySchema=mongoose.Schema({
     imgUrl:{
         type:String,
         require:true,
-    }
+    },
+    password: {
+        type: String,
+    
+        min: 5,
+      },
      
 
 

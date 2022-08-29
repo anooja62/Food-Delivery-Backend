@@ -9,9 +9,14 @@ router.post("/add-menu", async (req, res) => {
       price:req.body.price,
       category:req.body.category,
       imgUrl: req.body.imgUrl,
+      restaurantId:req.body.restaurantId
     });
 
     const menus = await newMenu.save();
+    const allMenu = await menu.find({  restaurantId:req.body.restaurantId,
+      isDeleted:0
+    })
+
     res.status(201).json(menus);
   } catch (err) {
     res.status(500).json(err);
@@ -19,9 +24,9 @@ router.post("/add-menu", async (req, res) => {
   }
 });
 
-router.get("/all-menu", async (req, res) => {
+router.get(`/all-menu/:id`, async (req, res) => {
   try {
-    const allMenu = await menu.find({
+    const allMenu = await menu.find({ restaurantId:req.params.id,
       isDeleted: 0,
     });
 
