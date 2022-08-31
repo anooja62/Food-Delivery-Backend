@@ -57,6 +57,9 @@ const restaurantSchema = mongoose.Schema({
   },
   ownerphone:{
     type:String,
+  },
+  restImg:{
+    type:String,
   }
 });
 

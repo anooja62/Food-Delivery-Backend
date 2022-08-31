@@ -91,6 +91,7 @@ router.put("/update-res/:id", async (req, res) => {
       licensetype:req.body.licensetype,
       ownername:req.body.ownername,
       ownerphone:req.body.ownerphone,
+      restImg: req.body.restImg,
 
     });
 
@@ -111,6 +112,18 @@ router.put("/update-res/:id", async (req, res) => {
     });
 
     res.status(200).json(allRestaurent);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+});
+router.get(`/single-rest/:id`, async (req, res) => {
+  try {
+    const singleRestaurent = await restaurant.findOne({ _id:req.params.id,
+      isRejected: 0,
+    });
+
+    res.status(200).json(singleRestaurent);
   } catch (err) {
     res.status(500).json(err);
     console.log(err);

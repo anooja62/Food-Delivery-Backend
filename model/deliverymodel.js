@@ -42,7 +42,10 @@ const deliveryboySchema=mongoose.Schema({
     
         min: 5,
       },
-     
+      profileImg:{
+        type:String,
+        require:true,
+    },
 
 
     

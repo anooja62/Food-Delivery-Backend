@@ -70,7 +70,35 @@ router.post("/delivery-login", async (req, res) => {
     res.status(500).send({ message: err });
   }
 });
+//deliveryboy update
+router.put("/update-delivery/:id", async (req, res) => {
+  try {
+    //generate new password
+    let hashedPassword;
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      hashedPassword = await bcrypt.hash(req.body.password, salt);
+    }
 
+    const deliveryboys = await deliveryboy.findByIdAndUpdate(req.params.id, {
+      name: req.body.name,
+      phone: req.body.phone,
+      email: req.body.email,
+      password: hashedPassword,
+    
+      profileImg: req.body.profileImg,
+      city:req.body.city,
+
+    });
+
+    //save user return response
+
+    res.status(201).json("updated");
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+});
 
 router.get("/all-deliveryboy",  async (req,res)=>{
   try {
