@@ -9,6 +9,7 @@ const reviewRoutes = require("./routes/Review");
 const addressRoutes = require("./routes/Address");
 const foodRoutes = require("./routes/Food");
 const comboRoutes = require("./routes/Combo");
+const messageRoutes = require("./routes/Message");
 
 
 
@@ -39,7 +40,8 @@ app.use("/deli",deliveryRoutes);
 app.use("/revi",reviewRoutes)
 app.use("/addr",addressRoutes)
 app.use("/food",foodRoutes)
-app.use("/comb",comboRoutes)
+app.use("/comb",comboRoutes);
+app.use("/msg",messageRoutes)
 
 
 
