@@ -10,6 +10,7 @@ const addressRoutes = require("./routes/Address");
 const foodRoutes = require("./routes/Food");
 const comboRoutes = require("./routes/Combo");
 const messageRoutes = require("./routes/Message");
+const cartRoutes = require("./routes/Cart");
 
 
 
@@ -42,6 +43,7 @@ app.use("/addr",addressRoutes)
 app.use("/food",foodRoutes)
 app.use("/comb",comboRoutes);
 app.use("/msg",messageRoutes)
+app.use("/cart",cartRoutes)
 
 
 

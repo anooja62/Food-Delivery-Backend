@@ -15,6 +15,7 @@ router.post("/register", async (req, res) => {
       phone: req.body.phone,
       email: req.body.email,
       password: hashedPassword,
+      otp:req.body._otp,
     });
 
     //save user return response
@@ -112,18 +113,17 @@ router.put("/block/:id", async (req, res) => {
 router.put("/send-otp", async (req, res) => {
   const _otp = Math.floor(100000 + Math.random() * 900000);
 
-  // const users = await users.findOne({ email: req.body.email });
+  const users = await user.findOne({ email: req.body.email });
 
-  // // send to user mail
-  // if (!users) {
-  //   res.send({ code: 500, message: "user not found" });
-  // }
+   // send to user mail
+   if (!users) {
+     res.send({ status: 500, message: "user not found" });
+   }
 
   let testAccount = await nodemailer.createTestAccount()
 
   let transporter = nodemailer.createTransport({
-    host: "https://mail.google.com/mail",
-    // port: 587,
+    service: "gmail",
     
     auth: {
       user: "deliorderfoods@gmail.com",
@@ -138,39 +138,38 @@ router.put("/send-otp", async (req, res) => {
   });
 
   if (info.messageId) {
-    console.log(info, 84);
-    user
-      .updateOne({ email: req.body.email,otp: _otp})
-      .then((result) => {
-        res.send({ code: 200, message: "otp send" });
+   
+    user.updateOne({ email: req.body.email},{otp: _otp})
+      .then(result => {
+        res.send({ status: 200, message: "otp send" });
       })
       .catch((err) => {
-        res.send({ code: 500, message: "Server err" });
+        res.send({ status: 500, message: "Server err" });
       });
   } else {
-    res.send({ code: 500, message: "Server err" });
+    res.send({ status: 500, message: "Server err" });
   }
 });
 
 //submit otp
 router.put("/submit-otp", async (req, res) => {
-  user
-    .findOne({ otp: req.body.otp })
-    .then((result) => {
+  user.findOne({ otp: req.body.otp })
+   
       //  update the password
 
-      user
-        .updateOne({ email: result.email }, { password: req.body.password })
-        .then((result) => {
-          res.send({ code: 200, message: "Password updated" });
-        })
-        .catch((err) => {
-          res.send({ code: 500, message: "Server err" });
-        });
-    })
-    .catch((err) => {
-      res.send({ code: 500, message: "otp is wrong" });
+      const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    // update pwd restaurant
+    const users = await user.findOne({ email: req.body.email })
+    const id = user._id
+
+    const psw = await user.findByIdAndUpdate(id, {
+      password:hashedPassword,
+      
+      
     });
+  
+    res.status(201).json(psw);
 });
 
 module.exports = router;
