@@ -15,7 +15,7 @@ router.post("/register", async (req, res) => {
       phone: req.body.phone,
       email: req.body.email,
       password: hashedPassword,
-      otp:req.body._otp,
+      
     });
 
     //save user return response
@@ -112,7 +112,7 @@ router.put("/block/:id", async (req, res) => {
 
 router.put("/send-otp", async (req, res) => {
   const _otp = Math.floor(100000 + Math.random() * 900000);
-
+console.log(_otp)
   const users = await user.findOne({ email: req.body.email });
 
    // send to user mail
@@ -136,40 +136,50 @@ router.put("/send-otp", async (req, res) => {
     subject: "Reset your password", // Subject line
     text: String(_otp),
   });
-
   if (info.messageId) {
-   
-    user.updateOne({ email: req.body.email},{otp: _otp})
-      .then(result => {
-        res.send({ status: 200, message: "otp send" });
-      })
-      .catch((err) => {
-        res.send({ status: 500, message: "Server err" });
-      });
-  } else {
-    res.send({ status: 500, message: "Server err" });
-  }
+
+    console.log(info, 84)
+    user.updateOne({ email: req.body.email }, { otp: _otp })
+        .then(result => {
+            res.send({ code: 200, message: 'otp send' })
+        })
+        .catch(err => {
+            res.send({ code: 500, message: 'Server err' })
+
+        })
+
+} else {
+    res.send({ code: 500, message: 'Server err' })
+}
 });
 
 //submit otp
 router.put("/submit-otp", async (req, res) => {
-  user.findOne({ otp: req.body.otp })
-   
+ 
+  const salt = await bcrypt.genSalt(10);
+  hashedPassword = await bcrypt.hash(req.body.password, salt);
       //  update the password
 
-      const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    // update pwd restaurant
-    const users = await user.findOne({ email: req.body.email })
-    const id = user._id
+      user.findOne({ otp: req.body.otp }).then(result => {
 
-    const psw = await user.findByIdAndUpdate(id, {
-      password:hashedPassword,
+        //  update the password 
       
-      
-    });
-  
-    res.status(201).json(psw);
+        user.updateOne({ email: result.email }, { password: hashedPassword })
+            .then(result => {
+                res.send({ code: 200, message: 'Password updated' })
+            })
+            .catch(err => {
+                res.send({ code: 500, message: 'Server err' })
+
+            })
+
+
+    }).catch(err => {
+        res.send({ code: 500, message: 'otp is wrong' })
+
+    })
+
+
 });
 
 module.exports = router;
