@@ -58,10 +58,10 @@ router.put("/restaurent-pw-update", async (req, res) => {
     const id = rest._id
 
     const psw = await restaurant.findByIdAndUpdate(id, {
-      password:hashedPassword,
+      password:hashedPassword,isApproved:1
       
     });
-    res.status(201).json(psw);
+    res.status(201).json("Accepted");
   } catch (err) {
     res.status(500).json(err);
     console.log(err);
@@ -107,10 +107,12 @@ router.put("/update-res/:id", async (req, res) => {
  //get resturant details
  router.get(`/res-details/:id`, async (req, res) => {
   try {
-    const allRestaurent = await restaurant.find({ restaurantId:req.params.id,
+    const allRestaurent = await restaurant.find({ restaurantId:req.params.id, 
       isRejected: 0,
     });
-
+   allRestaurent.filter((item)=>{
+    item.expiredate <= new Date
+   })
     res.status(200).json(allRestaurent);
   } catch (err) {
     res.status(500).json(err);

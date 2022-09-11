@@ -2,10 +2,7 @@ const mongoose = require("mongoose");
 
 
 const combofoodsSchema = new mongoose.Schema({
-    Items:{
-        type:String,
-        required:true
-    },
+    Items:[],
     price:{
         type:String,
         required:true

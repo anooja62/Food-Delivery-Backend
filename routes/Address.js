@@ -6,6 +6,7 @@ router.post("/address", async (req, res) => {
    
     //create new address
     const newShipping = new shipping({
+      label:req.body.label,
       name: req.body.name,
       phone:req.body.phone,
       pincode: req.body.pincode,

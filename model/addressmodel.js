@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
 
 const shippingSchema=mongoose.Schema({
+  label:{
+    type:String,
+   
+   
+},
+
      name:{
           type:String,
           require: true,

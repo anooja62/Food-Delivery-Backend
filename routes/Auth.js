@@ -112,7 +112,7 @@ router.put("/block/:id", async (req, res) => {
 
 router.put("/send-otp", async (req, res) => {
   const _otp = Math.floor(100000 + Math.random() * 900000);
-console.log(_otp)
+
   const users = await user.findOne({ email: req.body.email });
 
    // send to user mail
@@ -138,7 +138,7 @@ console.log(_otp)
   });
   if (info.messageId) {
 
-    console.log(info, 84)
+    
     user.updateOne({ email: req.body.email }, { otp: _otp })
         .then(result => {
             res.send({ code: 200, message: 'otp send' })

@@ -24,6 +24,12 @@ const messageSchema = new mongoose.Schema({
     require: true,
 
   },
+  replay:{
+    type: String,
+
+    require: true,
+
+  },
 
  }, { timestamps: true });
 
