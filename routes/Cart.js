@@ -3,7 +3,7 @@ const menu = require("../model/menumodel");
 const router = require("express").Router();
 
 router.post("/add-cart", async (req, res) => {
-  console.log(req.body);
+  
   let products = [];
   const findCart = await Cart.findOne({ userId: req.body.userId });
 
@@ -11,9 +11,9 @@ router.post("/add-cart", async (req, res) => {
     const updateUser = await findCart.updateOne({ $set: req.body });
     const carts = await Cart.find({ userId: req.body.userId });
     const length = carts[0].products.length;
-    console.log(carts);
+   
     for (let i = 0; i < length; i++) {
-      console.log(carts[0].products[i].ProductId);
+     
       let menus = await menu.find({ _id: carts[0].products[i].ProductId });
       menus.map((item) => {
         return products.push({
@@ -35,9 +35,9 @@ router.post("/add-cart", async (req, res) => {
       const savedCart = await newCart.save();
       const carts = await Cart.find({ userId: req.body.userId });
       const length = carts[0].products.length;
-      console.log(carts);
+      
       for (let i = 0; i < length; i++) {
-        console.log(carts[0].products[i].ProductId);
+       
         let menus = await menu.find({ _id: carts[0].products[i].ProductId });
         menus.map((item) => {
           return products.push({
@@ -59,7 +59,7 @@ router.post("/add-cart", async (req, res) => {
   }
 });
 
-//UPDATA PRODUCTS
+//UPDATE PRODUCTS
 router.put("/:id", async (req, res) => {
   try {
     const updatedCart = await User.findByIdAndUpdate(
@@ -109,9 +109,9 @@ router.get("/get-cart/:id", async (req, res) => {
   try {
     const carts = await Cart.find({ userId: req.params.id });
     const length = carts[0].products.length;
-    console.log(carts);
+   
     for (let i = 0; i < length; i++) {
-      console.log(carts[0].products[i].ProductId);
+      
       let menus = await menu.find({ _id: carts[0].products[i].ProductId });
       menus.map((item) => {
         return products.push({

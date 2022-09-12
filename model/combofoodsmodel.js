@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 
 const combofoodsSchema = new mongoose.Schema({
-    Items:[],
+    foodname:[],
     price:{
         type:String,
         required:true
@@ -19,6 +19,11 @@ const combofoodsSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
+    restaurantId: {
+        type: String,
+    
+        require: true,
+      },
 
     
 });
