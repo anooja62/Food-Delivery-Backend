@@ -5,10 +5,11 @@ const foodreview = require("../model/reviewmodel");
 router.post("/review", async (req, res) => {
   try {
    
-    //create new food review
+    //create new  review
     const newFoodreview = new foodreview({
       name: req.body.name,
       description:req.body.description,
+      restaurantId:req.body.restaurantId
       
       
     });
@@ -16,6 +17,9 @@ router.post("/review", async (req, res) => {
     //save user return response
 
     const foodreviews = await newFoodreview.save();
+    const allFoodreview = await foodreview.find({  restaurantId:req.body.restaurantId,
+      isApproved:0
+    })
     res.status(201).json(foodreviews);
   } catch (err) {
     res.status(500).json(err);
@@ -24,9 +28,10 @@ router.post("/review", async (req, res) => {
 });
 
 
-router.get("/all-foodreview",  async (req,res)=>{
+
+router.get(`/all-foodreview/:id`,  async (req,res)=>{
   try {
-  const allFoodreview = await foodreview.find({
+  const allFoodreview = await foodreview.find({restaurantId:req.params.id,
     isApproved:0
   })
  
@@ -35,7 +40,7 @@ router.get("/all-foodreview",  async (req,res)=>{
       res.status(500).json(err);
       console.log(err);
   }
-})
+});
 
 router.put("/approve/:id", async (req,res) => {
 

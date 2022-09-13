@@ -12,10 +12,17 @@ const foodreviewSchema = mongoose.Schema({
         type: String,
         require: true,
     },
+
     isApproved:{
         type:Number,
         default:0
-    }
+    },
+    restaurantId: {
+        type: String,
+    
+        require: true,
+      },
+
 
 });
 

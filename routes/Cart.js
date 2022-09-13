@@ -104,7 +104,7 @@ router.get("/allCart", async (req, res) => {
   }
 });
 
-router.get("/get-cart/:id", async (req, res) => {
+router.get(`/get-cart/:id`, async (req, res) => {
   let products = [];
   try {
     const carts = await Cart.find({ userId: req.params.id });
