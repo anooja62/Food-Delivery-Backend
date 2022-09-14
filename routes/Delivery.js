@@ -38,7 +38,7 @@ router.put("/deliveryboy-pw-update", async (req, res) => {
     const id = deliveryboys._id
 
     const psw = await deliveryboy.findByIdAndUpdate(id, {
-      password:hashedPassword,
+      password:hashedPassword,isApproved:1
       
     });
     res.status(201).json(psw);

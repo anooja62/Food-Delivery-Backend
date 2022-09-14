@@ -58,18 +58,7 @@ router.put("/approve/:id", async (req,res) => {
 
 })
 
-router.put("/reject/:id", async (req,res) => {
 
-try{
-    const foodreviews = await foodreview.findByIdAndUpdate(req.params.id,{
-      isApproved:0
-    })
-    res.status(200).json("updated",)
-}catch(err){
-    return res.status(500).json(err);
-}
-
-})
 
 
 module.exports = router;

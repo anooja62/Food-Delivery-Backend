@@ -44,8 +44,12 @@ const deliveryboySchema=mongoose.Schema({
       },
       profileImg:{
         type:String,
-        require:true,
+       
     },
+    isApproved: {
+        type: Number,
+        default: 0,
+      },
 
 
     
