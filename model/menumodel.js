@@ -4,6 +4,7 @@ const foodSchema = new mongoose.Schema({
   foodname: {
     type: String,
     required: true,
+    unique:true,
   },
   price: {
     type: String,
@@ -15,6 +16,7 @@ const foodSchema = new mongoose.Schema({
   },
   imgUrl: {
     type: String,
+    unique:true,
   },
 
   isDeleted: {

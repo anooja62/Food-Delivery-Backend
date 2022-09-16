@@ -19,7 +19,7 @@ const foodreviewSchema = mongoose.Schema({
     },
     restaurantId: {
         type: String,
-    
+        unique: true,
         require: true,
       },
 

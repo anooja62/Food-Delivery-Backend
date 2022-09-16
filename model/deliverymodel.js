@@ -20,7 +20,7 @@ const deliveryboySchema=mongoose.Schema({
       email:{
           type:String,
           require:true,
-          
+          unique:true,
           max:50
       },
       
