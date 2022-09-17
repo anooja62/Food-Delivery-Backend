@@ -109,12 +109,14 @@ router.get(`/get-cart/:id`, async (req, res) => {
   try {
     const carts = await Cart.find({ userId: req.params.id });
     const length = carts[0].products.length;
+
    
     for (let i = 0; i < length; i++) {
       
       let menus = await menu.find({ _id: carts[0].products[i].ProductId });
       menus.map((item) => {
         return products.push({
+          
           _id: item._id,
           foodname: item.foodname,
           price: item.price,
@@ -126,7 +128,7 @@ router.get(`/get-cart/:id`, async (req, res) => {
         });
       });
     }
-
+  
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json(err);

@@ -3,20 +3,33 @@ const mongoose = require("mongoose");
 const paymentSchema = mongoose.Schema({
   userId: {
     type: String,
-
-   
-   unique:true,
-  },
   
+    
+  },
   amount: {
     type: String,
-    require:true,
+    required: true,
   },
 
-  receipt:{
+  order_id: {
+    type: String,
+  },
+  payment_id:{
     type:String,
+  },
+  cart_id:{
+   type:String,
+  },
+  address_id:{
+    type:String
+  },
+  status:{
+    type:String
+  },
+  method:{
+    type:String
   }
-  
-});
+
+},{timestamps: true});
 
 module.exports = mongoose.model("Payment", paymentSchema);
