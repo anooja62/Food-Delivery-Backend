@@ -20,7 +20,7 @@ router.post("/review", async (req, res) => {
     const allFoodreview = await foodreview.find({  restaurantId:req.body.restaurantId,
       isApproved:0
     })
-    res.status(201).json(foodreviews);
+    res.status(201).json(allFoodreview);
   } catch (err) {
     res.status(500).json(err);
     console.log(err);

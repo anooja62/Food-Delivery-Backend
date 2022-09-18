@@ -24,10 +24,16 @@ const messageSchema = new mongoose.Schema({
     require: true,
 
   },
-  replay:{
+  reply:{
     type: String,
 
     require: true,
+
+  },
+  isReplyed:{
+    type: Number,
+
+   default:0,
 
   },
 

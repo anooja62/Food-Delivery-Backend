@@ -3,14 +3,14 @@ const mongoose = require("mongoose");
 const foodreviewSchema = mongoose.Schema({
     name: {
         type: String,
-        require: true,
+        required: true,
 
 
     },
 
     description: {
         type: String,
-        require: true,
+        required: true,
     },
 
     isApproved:{
@@ -19,8 +19,8 @@ const foodreviewSchema = mongoose.Schema({
     },
     restaurantId: {
         type: String,
-        unique: true,
-        require: true,
+        
+        required: true,
       },
 
 

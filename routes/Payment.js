@@ -2,53 +2,54 @@ const router = require("express").Router();
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 
-
 const Cart = require("../model/cartmodel");
-const Payment= require("../model/paymentmodel");
+const Payment = require("../model/paymentmodel");
+const shipping = require("../model/addressmodel");
 router.post("/orders", async (req, res) => {
-  let orderId
+  let orderId;
   try {
     const instance = new Razorpay({
-      key_id: "rzp_test_9L3CizQufAwqct",
+      key_id: "rzp_test_0YsOnkZc3nwtKA",
 
-      key_secret: "HC7zdhdRoobGyE9hVDPrR486"
+      key_secret: "oePZv1JdSwiEamTJWy45NG6G",
     });
 
-    const options =  {
- 
+    const options = {
       amount: req.body.amount * 100,
       currency: "INR",
       receipt: crypto.randomBytes(10).toString("hex"),
     };
     const carts = await Cart.find({ userId: req.body.userId });
-    console.log(carts[0]._id)
-    const cartId =carts[0]._id
-    instance.orders.create(options, (error, order) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).json({ message: "Something Went Wrong!" });
-        }
-        res.status(200).json({ data: order });
-        orderId = order.id
-        
-        const payment = {
-          userId:req.body.userId,
-          amount: req.body.amount ,
-          order_id:orderId,
-          cart_id:cartId,
-          
+    const allShipping = await shipping.find({  userId:req.body.userId});
     
-        }
-        const newPayment = new Payment(payment);
-        try {
-          const savedPayment = newPayment.save();
-          console.log(savedPayment)
-        }catch(err){}
+    const cartId = carts[0]._id;
+    const addressId = allShipping[0]._id;
+    instance.orders.create(options, (error, order) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Something Went Wrong!" });
+      }
+      res.status(200).json({ data: order });
+      orderId = order.id;
+     
+      const payment = {
+        userId: req.body.userId,
+        amount: req.body.amount,
+        order_id: orderId,
+        cart_id: cartId,
+        address_id: addressId,
+        
+      };
+      const newPayment = new Payment(payment);
+      try {
+        const savedPayment = newPayment.save();
+        console.log(savedPayment);
+      } catch (err) {}
     });
-} catch (error) {
+  } catch (error) {
     res.status(500).json({ message: "Internal Server Error!" });
     console.log(error);
-}
+  }
 });
 
 router.post("/verify", async (req, res) => {
@@ -57,7 +58,7 @@ router.post("/verify", async (req, res) => {
       req.body;
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSign = crypto
-      .createHmac("sha256", "HC7zdhdRoobGyE9hVDPrR486")
+      .createHmac("sha256", "oePZv1JdSwiEamTJWy45NG6G")
       .update(sign.toString())
       .digest("hex");
 
@@ -73,40 +74,39 @@ router.post("/verify", async (req, res) => {
 });
 
 router.post("/razorpay-callback", async (req, res) => {
-   // do a validation
-   const secret = "123456789";
+  // do a validation
+  const secret = "123456789";
 
-   console.log(req.body);
- 
-   const crypto = require("crypto");
- 
-   const shasum = crypto.createHmac("sha256", secret);
-   shasum.update(JSON.stringify(req.body));
-   const digest = shasum.digest("hex");
- 
-   console.log(digest, req.headers["x-razorpay-signature"]);
-   const { id, amount, order_id, method, status } =
-   req.body.payload.payment.entity;
+  console.log(req.body);
 
-   console.log(id, amount, order_id, method, status)
+  const crypto = require("crypto");
 
-   const updatePayment = await Payment.findOneAndUpdate(order_id,{
-    status:status,
-    method:method
-   
-  });
+  const shasum = crypto.createHmac("sha256", secret);
+  shasum.update(JSON.stringify(req.body));
+  const digest = shasum.digest("hex");
+
   
-  console.log(updatePayment)
-   if (digest === req.headers["x-razorpay-signature"]) {
-     console.log("request is legit");
-     // process it
-     console.log("fdsfd", req.body.pay);
+  const { id, amount, order_id, method, status } =
+    req.body.payload.payment.entity;
+  const paymentId = await Payment.findOne({ order_id: order_id });
+  const pay_id = paymentId._id;
+
+ 
+
+  const updatePayment = await Payment.findByIdAndUpdate(pay_id, {
+    status: status,
+    method: method,
+  });
+
+  console.log(updatePayment);
+  if (digest === req.headers["x-razorpay-signature"]) {
+    console.log("request is legit");
+    
   } else {
     console.log("error in verifications");
-    // pass it
+    
   }
   res.json({ status: "ok" });
 });
-
 
 module.exports = router;

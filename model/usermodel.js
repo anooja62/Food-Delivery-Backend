@@ -3,23 +3,19 @@ const mongoose = require("mongoose");
 const userSchema = mongoose.Schema({
   name: {
     type: String,
-
-    min: 3,
-    max: 20,
+  
   },
   isAdmin: {
     type: Boolean,
   },
   phone: {
     type: String,
-    unique: true,
-    max: 11,
+  
   },
 
   email: {
     type: String,
-   
-    unique:true,
+  
     max: 50,
   },
 

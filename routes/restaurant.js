@@ -12,6 +12,7 @@ router.post("/add-restaurent", async (req, res) => {
       email: req.body.email,
       address: req.body.address,
       imgUrl: req.body.imgUrl,
+      license:req.body.license,
      
      
     });

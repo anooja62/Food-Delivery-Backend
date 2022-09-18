@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const user = require("../model/usermodel");
 const bcrypt = require("bcrypt");
-const nodemailer = require('nodemailer')
+const nodemailer = require("nodemailer");
 
 router.post("/register", async (req, res) => {
   try {
@@ -10,20 +10,27 @@ router.post("/register", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
     //create new user
-    const newUser = new user({
-      name: req.body.name,
-      phone: req.body.phone,
-      email: req.body.email,
-      password: hashedPassword,
+   
+      const newUser = new user({
+        name: req.body.name,
+        phone: req.body.phone,
+        email: req.body.email,
+        password: hashedPassword,
+      });
+      const userEmail = await user.findOne({ email: req.body.email });
+      userEmail && res.status(404).json("Email already  Exist!!!");
       
-    });
+      if (!userEmail) {
+       
+        const users = await newUser.save();
+       
+        res.status(201).json(users);
+      }
+ 
 
     //save user return response
-
-    const users = await newUser.save();
-    res.status(201).json(users);
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ message: err });
     console.log(err);
   }
 });
@@ -115,16 +122,16 @@ router.put("/send-otp", async (req, res) => {
 
   const users = await user.findOne({ email: req.body.email });
 
-   // send to user mail
-   if (!users) {
-     res.send({ status: 500, message: "user not found" });
-   }
+  // send to user mail
+  if (!users) {
+    res.send({ status: 500, message: "user not found" });
+  }
 
-  let testAccount = await nodemailer.createTestAccount()
+  let testAccount = await nodemailer.createTestAccount();
 
   let transporter = nodemailer.createTransport({
     service: "gmail",
-    
+
     auth: {
       user: "deliorderfoods@gmail.com",
       pass: "yaqcvvzakzukldgz",
@@ -137,49 +144,42 @@ router.put("/send-otp", async (req, res) => {
     text: String(_otp),
   });
   if (info.messageId) {
-
-    
-    user.updateOne({ email: req.body.email }, { otp: _otp })
-        .then(result => {
-            res.send({ code: 200, message: 'otp send' })
-        })
-        .catch(err => {
-            res.send({ code: 500, message: 'Server err' })
-
-        })
-
-} else {
-    res.send({ code: 500, message: 'Server err' })
-}
+    user
+      .updateOne({ email: req.body.email }, { otp: _otp })
+      .then((result) => {
+        res.send({ code: 200, message: "otp send" });
+      })
+      .catch((err) => {
+        res.send({ code: 500, message: "Server err" });
+      });
+  } else {
+    res.send({ code: 500, message: "Server err" });
+  }
 });
 
 //submit otp
 router.put("/submit-otp", async (req, res) => {
- 
   const salt = await bcrypt.genSalt(10);
   hashedPassword = await bcrypt.hash(req.body.password, salt);
+  //  update the password
+
+  user
+    .findOne({ otp: req.body.otp })
+    .then((result) => {
       //  update the password
 
-      user.findOne({ otp: req.body.otp }).then(result => {
-
-        //  update the password 
-      
-        user.updateOne({ email: result.email }, { password: hashedPassword })
-            .then(result => {
-                res.send({ code: 200, message: 'Password updated' })
-            })
-            .catch(err => {
-                res.send({ code: 500, message: 'Server err' })
-
-            })
-
-
-    }).catch(err => {
-        res.send({ code: 500, message: 'otp is wrong' })
-
+      user
+        .updateOne({ email: result.email }, { password: hashedPassword })
+        .then((result) => {
+          res.send({ code: 200, message: "Password updated" });
+        })
+        .catch((err) => {
+          res.send({ code: 500, message: "Server err" });
+        });
     })
-
-
+    .catch((err) => {
+      res.send({ code: 500, message: "otp is wrong" });
+    });
 });
 
 module.exports = router;
