@@ -3,19 +3,19 @@ const menu = require("../model/menumodel");
 
 router.post("/add-menu", async (req, res) => {
   try {
-    
     const newMenu = new menu({
       foodname: req.body.foodname,
-      price:req.body.price,
-      category:req.body.category,
+      price: req.body.price,
+      category: req.body.category,
       imgUrl: req.body.imgUrl,
-      restaurantId:req.body.restaurantId
+      restaurantId: req.body.restaurantId,
     });
 
     const menus = await newMenu.save();
-    const allMenu = await menu.find({  restaurantId:req.body.restaurantId,
-      isDeleted:0
-    })
+    const allMenu = await menu.find({
+      restaurantId: req.body.restaurantId,
+      isDeleted: 0,
+    });
 
     res.status(201).json(menus);
   } catch (err) {
@@ -23,10 +23,22 @@ router.post("/add-menu", async (req, res) => {
     console.log(err);
   }
 });
+router.get(`/single-menu/:id`, async (req, res) => {
+  try {
+    const singleMenu = await menu.findOne({ _id:req.params.id,
+      isDeleted: 0,
+    });
 
+    res.status(200).json(singleMenu);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+});
 router.get(`/all-menu/:id`, async (req, res) => {
   try {
-    const allMenu = await menu.find({ restaurantId:req.params.id,
+    const allMenu = await menu.find({
+      restaurantId: req.params.id,
       isDeleted: 0,
     });
 
@@ -44,6 +56,20 @@ router.put("/delete/:id", async (req, res) => {
     });
     const allMenu = await menu.find({
       isDeleted: 0,
+    });
+    res.status(200).json(allMenu);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+});
+router.put("/update/:id", async (req, res) => {
+  try {
+    const newMenu = await restaurant.findByIdAndUpdate(req.params.id, {
+      foodname: req.body.foodname,
+      price: req.body.price,
+      category: req.body.category,
+      imgUrl: req.body.imgUrl,
+      restaurantId: req.body.restaurantId,
     });
     res.status(200).json(allMenu);
   } catch (err) {

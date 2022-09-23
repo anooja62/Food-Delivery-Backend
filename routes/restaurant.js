@@ -13,6 +13,9 @@ router.post("/add-restaurent", async (req, res) => {
       address: req.body.address,
       imgUrl: req.body.imgUrl,
       license:req.body.license,
+      ownername:req.body.ownername,
+      ownerphone:req.body.ownerphone,
+
      
      
     });
@@ -87,9 +90,7 @@ router.put("/update-res/:id", async (req, res) => {
       password: hashedPassword,
       license:req.body.license,
       about:req.body.about,
-      issuedate:req.body.issuedate,
-      expiredate:req.body.expiredate,
-      licensetype:req.body.licensetype,
+      
       ownername:req.body.ownername,
       ownerphone:req.body.ownerphone,
       restImg: req.body.restImg,

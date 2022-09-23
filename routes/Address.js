@@ -40,7 +40,7 @@ router.get(`/all-addresses/:id`,  async (req,res)=>{
   }
 })
 
-router.put("/deleted/:id", async (req,res) => {
+router.put("/delete/:id", async (req,res) => {
 
         try{
             const ship = await shipping.findByIdAndUpdate(req.params.id,{

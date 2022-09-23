@@ -42,21 +42,7 @@ router.get(`/all-foodreview/:id`,  async (req,res)=>{
   }
 });
 
-router.put("/approve/:id", async (req,res) => {
 
-        try{
-            const foodreviews = await foodreview.findByIdAndUpdate(req.params.id,{
-              isApproved:1
-            })
-            const allFoodreview = await foodreview.find({
-              isApproved: 0,
-            });
-            res.status(200).json(allFoodreview);
-        }catch(err){
-            return res.status(500).json(err);
-        }
-
-})
 
 
 

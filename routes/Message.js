@@ -31,7 +31,18 @@ router.get(`/single-msg/:id`, async (req, res) => {
     console.log(err);
   }
 });
+router.get(`/single-reply/:id`, async (req, res) => {
+  try {
+    const singleReply = await message.findOne({ _id:req.params.id,
+      isReplyed: 1,
+    });
 
+    res.status(200).json(singleReply);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+});
 
 
 router.get("/all-Message", async (req, res) => {
@@ -46,7 +57,18 @@ router.get("/all-Message", async (req, res) => {
     console.log(err);
   }
 });
+router.get("/get-reply/:id", async (req, res) => {
+  try {
+    const allMessage = await message.find({
+      isReplyed: 1,
+    });
 
+    res.status(200).json(allMessage);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+});
 router.put("/reply/:id", async (req, res) => {
   try {
     const messages = await message.findByIdAndUpdate(req.params.id, {
@@ -61,5 +83,6 @@ router.put("/reply/:id", async (req, res) => {
     return res.status(500).json(err);
   }
 });
+
 
 module.exports = router;
