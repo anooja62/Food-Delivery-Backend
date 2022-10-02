@@ -13,6 +13,7 @@ const comboRoutes = require("./routes/Combo");
 const messageRoutes = require("./routes/Message");
 const cartRoutes = require("./routes/Cart");
 const paymentRoutes = require("./routes/Payment");
+const orderRoutes = require("./routes/Orders");
 
 //app config
 const app = express();
@@ -43,6 +44,7 @@ app.use("/comb", comboRoutes);
 app.use("/msg", messageRoutes);
 app.use("/cart", cartRoutes);
 app.use("/pay", paymentRoutes);
+app.use("/order", orderRoutes);
 
 
 

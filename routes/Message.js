@@ -7,7 +7,7 @@ router.post("/add-message", async (req, res) => {
     //create new message
     const newMessage = new message({
       restaurantname: req.body.restaurantname,
- restaurantId:req.body.restaurantId,
+      restaurantId: req.body.restaurantId,
       requestFor: req.body.requestFor,
       msg: req.body.msg,
     });
@@ -21,7 +21,8 @@ router.post("/add-message", async (req, res) => {
 });
 router.get(`/single-msg/:id`, async (req, res) => {
   try {
-    const singleMessage = await message.findOne({ _id:req.params.id,
+    const singleMessage = await message.findOne({
+      _id: req.params.id,
       isReplyed: 0,
     });
 
@@ -33,7 +34,8 @@ router.get(`/single-msg/:id`, async (req, res) => {
 });
 router.get(`/single-reply/:id`, async (req, res) => {
   try {
-    const singleReply = await message.findOne({ _id:req.params.id,
+    const singleReply = await message.findOne({
+      _id: req.params.id,
       isReplyed: 1,
     });
 
@@ -43,7 +45,6 @@ router.get(`/single-reply/:id`, async (req, res) => {
     console.log(err);
   }
 });
-
 
 router.get("/all-Message", async (req, res) => {
   try {
@@ -59,7 +60,7 @@ router.get("/all-Message", async (req, res) => {
 });
 router.get("/get-reply/:id", async (req, res) => {
   try {
-    const allMessage = await message.find({
+    const allMessage = await message.find({restaurantId:req.params.id,
       isReplyed: 1,
     });
 
@@ -72,7 +73,7 @@ router.get("/get-reply/:id", async (req, res) => {
 router.put("/reply/:id", async (req, res) => {
   try {
     const messages = await message.findByIdAndUpdate(req.params.id, {
-      reply:req.body.reply,
+      reply: req.body.reply,
       isReplyed: 1,
     });
     const allMessage = await message.find({
@@ -83,6 +84,5 @@ router.put("/reply/:id", async (req, res) => {
     return res.status(500).json(err);
   }
 });
-
 
 module.exports = router;

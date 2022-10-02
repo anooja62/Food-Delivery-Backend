@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt");
 
 router.post("/add-restaurent", async (req, res) => {
   try {
-    
     //create new restaurant
     const newRestaurent = new restaurant({
       name: req.body.name,
@@ -12,18 +11,19 @@ router.post("/add-restaurent", async (req, res) => {
       email: req.body.email,
       address: req.body.address,
       imgUrl: req.body.imgUrl,
-      license:req.body.license,
-      ownername:req.body.ownername,
-      ownerphone:req.body.ownerphone,
-
-     
-     
+      license: req.body.license,
+      
     });
+    const restEmail = await restaurant.findOne({ email: req.body.email });
+    restEmail && res.status(404).json("Email already Exist!!!");
 
-    const rest = await newRestaurent.save();
-    res.status(201).json(rest);
+    if (!restEmail) {
+      const rest = await newRestaurent.save();
+
+      res.status(201).json(rest);
+    }
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({message: err});
     console.log(err);
   }
 });
@@ -32,8 +32,6 @@ router.post("/rest-login", async (req, res) => {
   try {
     const rest = await restaurant.findOne({ email: req.body.email });
     !rest && res.status(404).json("User not found");
-
-
 
     if (rest) {
       const validPassword = await bcrypt.compare(
@@ -52,18 +50,17 @@ router.post("/rest-login", async (req, res) => {
 });
 
 router.put("/restaurent-pw-update", async (req, res) => {
-
   try {
-    console.log(req.body)
+    console.log(req.body);
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
     // update pwd restaurant
-    const rest = await restaurant.findOne({ email: req.body.email })
-    const id = rest._id
+    const rest = await restaurant.findOne({ email: req.body.email });
+    const id = rest._id;
 
     const psw = await restaurant.findByIdAndUpdate(id, {
-      password:hashedPassword,isApproved:1
-      
+      password: hashedPassword,
+      isApproved: 1,
     });
     res.status(201).json("Accepted");
   } catch (err) {
@@ -88,13 +85,12 @@ router.put("/update-res/:id", async (req, res) => {
       phone: req.body.phone,
       email: req.body.email,
       password: hashedPassword,
-      license:req.body.license,
-      about:req.body.about,
-      
-      ownername:req.body.ownername,
-      ownerphone:req.body.ownerphone,
-      restImg: req.body.restImg,
+      license: req.body.license,
+      about: req.body.about,
 
+      ownername: req.body.ownername,
+      ownerphone: req.body.ownerphone,
+      restImg: req.body.restImg,
     });
 
     //save user return response
@@ -106,15 +102,16 @@ router.put("/update-res/:id", async (req, res) => {
   }
 });
 
- //get resturant details
- router.get(`/res-details/:id`, async (req, res) => {
+//get resturant details
+router.get(`/res-details/:id`, async (req, res) => {
   try {
-    const allRestaurent = await restaurant.find({ restaurantId:req.params.id, 
+    const allRestaurent = await restaurant.find({
+      restaurantId: req.params.id,
       isRejected: 0,
     });
-   allRestaurent.filter((item)=>{
-    item.expiredate <= new Date
-   })
+    allRestaurent.filter((item) => {
+      item.expiredate <= new Date();
+    });
     res.status(200).json(allRestaurent);
   } catch (err) {
     res.status(500).json(err);
@@ -123,7 +120,8 @@ router.put("/update-res/:id", async (req, res) => {
 });
 router.get(`/single-rest/:id`, async (req, res) => {
   try {
-    const singleRestaurent = await restaurant.findOne({ _id:req.params.id,
+    const singleRestaurent = await restaurant.findOne({
+      _id: req.params.id,
       isRejected: 0,
     });
 
@@ -133,8 +131,6 @@ router.get(`/single-rest/:id`, async (req, res) => {
     console.log(err);
   }
 });
-
-
 
 router.get("/all-restaurent", async (req, res) => {
   try {

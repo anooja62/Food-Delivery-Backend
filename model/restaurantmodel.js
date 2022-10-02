@@ -9,15 +9,7 @@ const restaurantSchema = mongoose.Schema({
   license: {
     type: String,
   },
-  issuedate:{
-    type:String,
-  },
-  expiredate:{
-    type:String,
-  },
-  licensetype:{
-    type:String,
-  },
+  
 
   phone: {
     type: String,

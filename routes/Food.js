@@ -64,14 +64,14 @@ router.put("/delete/:id", async (req, res) => {
 });
 router.put("/update/:id", async (req, res) => {
   try {
-    const newMenu = await restaurant.findByIdAndUpdate(req.params.id, {
+    const menus = await menu.findByIdAndUpdate(req.params.id, {
       foodname: req.body.foodname,
       price: req.body.price,
       category: req.body.category,
       imgUrl: req.body.imgUrl,
-      restaurantId: req.body.restaurantId,
+      
     });
-    res.status(200).json(allMenu);
+    res.status(200).json("updated");
   } catch (err) {
     return res.status(500).json(err);
   }

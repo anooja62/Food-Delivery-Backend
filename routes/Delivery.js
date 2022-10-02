@@ -12,11 +12,14 @@ router.post("/delivery", async (req, res) => {
       city: req.body.city,
       imgUrl: req.body.imgUrl,
     });
+    const userEmail = await deliveryboy.findOne({ email: req.body.email });
+    userEmail && res.status(404).json("Email already Exist!!!");
 
-    //save user return response
+    if (!userEmail) {
+      const deliveryboys = await newDeliveryboy.save();
 
-    const deliveryboys = await newDeliveryboy.save();
-    res.status(201).json(deliveryboys);
+      res.status(201).json(deliveryboys);
+    }
   } catch (err) {
     res.status(500).json(err);
     console.log(err);
