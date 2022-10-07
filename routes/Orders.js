@@ -3,17 +3,14 @@ const Orders = require("../model/ordersmodel")
 const menu = require("../model/menumodel");
 const router = require("express").Router();
 
-router.post("/add-order", async (req, res) => {
+router.post("/add-order/:id", async (req, res) => {
     
   
 
-  const findCart = await Cart.findOne({ userId: req.body.userId });
+  const findCart = await Cart.findOne({ userId: req.params.id });
 
 // console.log(findCart)
-const obj = {
-    userId:req.body.userId,
 
-}
 
  
     
@@ -30,61 +27,55 @@ const obj = {
   
 });
 
-//UPDATE PRODUCTS
-router.put("/:id", async (req, res) => {
-  try {
-    const updatedCart = await User.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    );
-    res.status(200).json(updatedCart);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
 
-//DELETE PRODUCTS
-router.delete("/:id", async (req, res) => {
-  try {
-    await Cart.findByIdAndDelete(req.params.id);
-    res.status(200).json("Cart has  been deleted");
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-//GET USER CART
-router.get("/find/:id", async (req, res) => {
-  try {
-    const cart = await Cart.findOne({ userId: req.params.id });
 
-    res.status(200).json(cart);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
 
-router.get("/allCart", async (req, res) => {
-  try {
-    const carts = await Cart.find();
-    res.status(200).json(carts);
-  } catch (err) {
-    req.status(500).json(err);
-  }
-});
 
-router.get(`/get-cart/:id`, async (req, res) => {
+router.get(`/get-order/:id`, async (req, res) => {
   let products = [];
   try {
-    const carts = await Cart.find({ userId: req.params.id });
-    const length = carts[0].products.length;
+  const order = await Orders.find({ userId: req.params.id });
+  for (let i = 0; i < order.length; i++) {
+
+  let tempProducts = []
+    const length = order[i].products.length;
 
    
-    for (let i = 0; i < length; i++) {
+    for (let j = 0; j < length; j++) {
       
-      let menus = await menu.find({ _id: carts[0].products[i].ProductId });
+      let menus = await menu.find({ _id: order[i].products[j].ProductId });
+      menus.map((item) => {
+        return tempProducts.push({
+          _id: item._id,
+          foodname: item.foodname,
+          price: item.price,
+          image: item.imgUrl,
+          category: item.category,
+          isDeleted: item.isDeleted,
+          restaurantId: item.restaurantId,
+          quantity: order[i].products[j].quantity,
+        });
+      });
+    }
+    products.push(tempProducts)
+  }
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+
+router.get(`/get-resturant-order/:id`, async (req, res) => {
+  let products = [];
+  try {
+    const productsOfResturant = await menu.find({ restaurantId: req.params.id ,isDeleted:0 });
+    // const length = carts[0].products.length;
+
+   console.log(productsOfResturant)
+    for (let i = 0; i < productsOfResturant.length; i++) {
+      
+      let menus = await Orders.find({ _id: carts[0].products[i].ProductId });
       menus.map((item) => {
         return products.push({
           
