@@ -28,6 +28,9 @@ const paymentSchema = mongoose.Schema({
   },
   method:{
     type:String
+  },
+  isPaymentDone:{
+    type:Number
   }
 
 },{timestamps: true});

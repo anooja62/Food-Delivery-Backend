@@ -63,14 +63,30 @@ router.put("/delete/:id", async (req, res) => {
   }
 });
 router.put("/update/:id", async (req, res) => {
+ 
   try {
-    const menus = await menu.findByIdAndUpdate(req.params.id, {
-      foodname: req.body.foodname,
-      price: req.body.price,
-      category: req.body.category,
-      imgUrl: req.body.imgUrl,
+    if(req.body.imgUrl){
+      const menus = await menu.findByIdAndUpdate(req.params.id, {
+        foodname: req.body.foodname,
+        price: req.body.price,
+        category: req.body.category,
+        imgUrl: req.body.imgUrl,
+        
+      })
+      console.log(menus)
+    }else{
+      const menus = await menu.findByIdAndUpdate(req.params.id, {
+        foodname: req.body.foodname,
+        price: req.body.price,
+        category: req.body.category,
+       
+        
+      })
       
-    });
+    
+      
+    }
+   
     res.status(200).json("updated");
   } catch (err) {
     return res.status(500).json(err);

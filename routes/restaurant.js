@@ -12,7 +12,6 @@ router.post("/add-restaurent", async (req, res) => {
       address: req.body.address,
       imgUrl: req.body.imgUrl,
       license: req.body.license,
-      
     });
     const restEmail = await restaurant.findOne({ email: req.body.email });
     restEmail && res.status(404).json("Email already Exist!!!");
@@ -23,7 +22,7 @@ router.post("/add-restaurent", async (req, res) => {
       res.status(201).json(rest);
     }
   } catch (err) {
-    res.status(500).json({message: err});
+    res.status(500).json({ message: err });
     console.log(err);
   }
 });
@@ -139,6 +138,25 @@ router.get("/all-restaurent", async (req, res) => {
     });
 
     res.status(200).json(allRestaurent);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+});
+
+router.get("/parsed-restaurent", async (req, res) => {
+  try {
+    const allRestaurent = await restaurant.find({
+      isRejected: 0,
+    });
+
+    let tempArr = [];
+
+    allRestaurent.map((item) =>
+      tempArr.push({ label: item.name, value: item._id ,address:item.address })
+    );
+
+    res.status(200).json(tempArr);
   } catch (err) {
     res.status(500).json(err);
     console.log(err);

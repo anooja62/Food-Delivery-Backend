@@ -9,8 +9,17 @@ const OrdersSchema = new mongoose.Schema(
     orderReady: {
       type: Number,
     },
-    isDelivered: {
+    outForDelivery: {
       type: Number,
+    },
+    isDelivered: {
+      type:Number
+    },
+    address_id: {
+      type: String,
+    },
+    status: {
+      type: String,
     },
     products: [
       {

@@ -20,8 +20,8 @@ router.post("/orders", async (req, res) => {
       receipt: crypto.randomBytes(10).toString("hex"),
     };
     const carts = await Cart.find({ userId: req.body.userId });
-    const allShipping = await shipping.find({  userId:req.body.userId});
-    
+    const allShipping = await shipping.find({ userId: req.body.userId });
+
     const cartId = carts[0]._id;
     const addressId = allShipping[0]._id;
     instance.orders.create(options, (error, order) => {
@@ -31,19 +31,20 @@ router.post("/orders", async (req, res) => {
       }
       res.status(200).json({ data: order });
       orderId = order.id;
-     
+
       const payment = {
         userId: req.body.userId,
         amount: req.body.amount,
         order_id: orderId,
         cart_id: cartId,
         address_id: addressId,
-        
+        isPaymentDone:0
+
       };
       const newPayment = new Payment(payment);
       try {
         const savedPayment = newPayment.save();
-        console.log(savedPayment);
+        // console.log(savedPayment);
       } catch (err) {}
     });
   } catch (error) {
@@ -56,6 +57,7 @@ router.post("/verify", async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
+    // console.log(req.body);
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSign = crypto
       .createHmac("sha256", "oePZv1JdSwiEamTJWy45NG6G")
@@ -63,7 +65,25 @@ router.post("/verify", async (req, res) => {
       .digest("hex");
 
     if (razorpay_signature === expectedSign) {
-      return res.status(200).json({ message: "Payment verified successfully" });
+      // console.log(req.body.userId);
+      try {
+        const deleteCart = await Cart.deleteMany({ userId: req.body.userId });
+        // console.log(deleteCart);
+        // res.status(200).json("Cart has  been deleted");
+      } catch (err) {
+        res.status(500).json(err);
+      }
+      const paymentId = await Payment.findOne({ order_id: razorpay_order_id });
+
+      const pay_id = paymentId._id;
+      const updatePayment = await Payment.findByIdAndUpdate(pay_id, {
+        status: "caputured"
+       
+      });
+      console.log(updatePayment,pay_id)
+      return res.status(200).json({
+        message: "Payment verified successfully and cart deleted successfully",
+      });
     } else {
       return res.status(400).json({ message: "Invalid signature sent!" });
     }
@@ -77,7 +97,7 @@ router.post("/razorpay-callback", async (req, res) => {
   // do a validation
   const secret = "123456789";
 
-  console.log(req.body);
+  // console.log(req.body);
 
   const crypto = require("crypto");
 
@@ -85,26 +105,23 @@ router.post("/razorpay-callback", async (req, res) => {
   shasum.update(JSON.stringify(req.body));
   const digest = shasum.digest("hex");
 
-  
   const { id, amount, order_id, method, status } =
     req.body.payload.payment.entity;
   const paymentId = await Payment.findOne({ order_id: order_id });
-  const pay_id = paymentId._id;
 
- 
+  const pay_id = paymentId._id;
 
   const updatePayment = await Payment.findByIdAndUpdate(pay_id, {
     status: status,
     method: method,
+    isPaymentDone:1
   });
 
-  console.log(updatePayment);
+  // console.log(updatePayment);
   if (digest === req.headers["x-razorpay-signature"]) {
-    console.log("request is legit");
-    
+    // console.log("request is legit");
   } else {
     console.log("error in verifications");
-    
   }
   res.json({ status: "ok" });
 });
