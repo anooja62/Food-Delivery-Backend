@@ -44,7 +44,7 @@ router.post("/orders", async (req, res) => {
       const newPayment = new Payment(payment);
       try {
         const savedPayment = newPayment.save();
-        // console.log(savedPayment);
+        
       } catch (err) {}
     });
   } catch (error) {
@@ -57,7 +57,7 @@ router.post("/verify", async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
-    // console.log(req.body);
+    
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSign = crypto
       .createHmac("sha256", "oePZv1JdSwiEamTJWy45NG6G")
@@ -65,11 +65,9 @@ router.post("/verify", async (req, res) => {
       .digest("hex");
 
     if (razorpay_signature === expectedSign) {
-      // console.log(req.body.userId);
+     
       try {
-        const deleteCart = await Cart.deleteMany({ userId: req.body.userId });
-        // console.log(deleteCart);
-        // res.status(200).json("Cart has  been deleted");
+        
       } catch (err) {
         res.status(500).json(err);
       }
@@ -80,7 +78,7 @@ router.post("/verify", async (req, res) => {
         status: "caputured"
        
       });
-      console.log(updatePayment,pay_id)
+      
       return res.status(200).json({
         message: "Payment verified successfully and cart deleted successfully",
       });
@@ -97,7 +95,7 @@ router.post("/razorpay-callback", async (req, res) => {
   // do a validation
   const secret = "123456789";
 
-  // console.log(req.body);
+  
 
   const crypto = require("crypto");
 
@@ -117,9 +115,9 @@ router.post("/razorpay-callback", async (req, res) => {
     isPaymentDone:1
   });
 
-  // console.log(updatePayment);
+  
   if (digest === req.headers["x-razorpay-signature"]) {
-    // console.log("request is legit");
+    
   } else {
     console.log("error in verifications");
   }
