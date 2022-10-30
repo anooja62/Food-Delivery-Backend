@@ -13,12 +13,15 @@ const OrdersSchema = new mongoose.Schema(
       type: Number,
     },
     isDelivered: {
-      type:Number
+      type: Number,
     },
     address_id: {
       type: String,
     },
     status: {
+      type: String,
+    },
+    deliveryBoyId: {
       type: String,
     },
     products: [

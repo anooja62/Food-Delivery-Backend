@@ -5,22 +5,21 @@ const { request } = require("express");
 const router = require("express").Router();
 const Payment = require("../model/paymentmodel");
 const shipping = require("../model/addressmodel");
-
+const deliveryboy = require("../model/deliverymodel");
 router.post("/add-order/:id", async (req, res) => {
   const findCart = await Cart.findOne({ userId: req.params.id });
-  
+
   const MongoCartIdToSting = String(findCart._doc._id);
- 
+
   const getPayment = await Payment.findOne({
     userId: req.params.id,
     cart_id: MongoCartIdToSting,
   });
-  
 
   try {
     const { _id, ...others } = findCart._doc;
     const { address_id, ...otherItems } = getPayment._doc;
-    
+
     const newOrders = new Orders({
       ...others,
       address_id: address_id,
@@ -55,8 +54,11 @@ router.get(`/get-order/:id`, async (req, res) => {
             isDeleted: item.isDeleted,
             restaurantId: item.restaurantId,
             quantity: order[i].products[j].quantity,
-            status:   order[i].isDelivered === 1 && 2  ||  order[i].outForDelivery === 1 && 1 || 
-          order[i].outForDelivery === 0 && 0 ||  order[i].orderReady === 0 && 0
+            status:
+              (order[i].isDelivered === 1 && 2) ||
+              (order[i].outForDelivery === 1 && 1) ||
+              (order[i].outForDelivery === 0 && 0) ||
+              (order[i].orderReady === 0 && 0),
           });
         });
       }
@@ -107,12 +109,9 @@ router.get(`/get-resturant-order/:id`, async (req, res) => {
           filtered.push(order[i]._id);
           products.push(filtered);
         }
-
-       
       }
 
       res.status(200).json(products);
-      
     } catch (err) {
       res.status(500).json(err);
     }
@@ -130,13 +129,11 @@ router.put("/order-ready", async (req, res) => {
     let products = [];
     const order = await Orders.find({ orderReady: 0 });
 
-    
     for (let i = 0; i < order.length; i++) {
-     
       let tempProducts = [order[i]._id];
-      
+
       const length = order[i].products.length;
-      
+
       for (let j = 0; j < length; j++) {
         let menus = await menu.find({ _id: order[i].products[j].ProductId });
         menus.map((item) => {
@@ -155,7 +152,6 @@ router.put("/order-ready", async (req, res) => {
       let filtered = [];
       let unSkip = false;
       filtered = tempProducts.filter((item) => {
-        
         if (item.restaurantId === req.body.restaurantId) {
           unSkip = true;
         }
@@ -164,39 +160,29 @@ router.put("/order-ready", async (req, res) => {
       });
 
       if (unSkip) {
-        
         filtered.push(order[i]._id);
         products.push(filtered);
       }
-
-      
     }
-   
+
     res.status(200).json(products);
-    
   } catch (err) {
     return res.status(500).json(err);
   }
 });
 
 router.get(`/get-delivery-order/:id`, async (req, res) => {
- 
   let products = [];
 
   try {
     const order = await Orders.find({ orderReady: 1, outForDelivery: 0 });
-    
 
     for (let i = 0; i < order.length; i++) {
-     
-
-      
       const address = await shipping.findOne({ _id: order[i].address_id });
       let tempProducts = [order[i]._id];
-     
 
       const length = order[i].products.length;
-      
+
       for (let j = 0; j < length; j++) {
         let menus = await menu.find({ _id: order[i].products[j].ProductId });
         menus.map((item) => {
@@ -212,15 +198,13 @@ router.get(`/get-delivery-order/:id`, async (req, res) => {
           });
         });
       }
-     
+
       tempProducts.push({ orderId: order[i]._id, address: address });
 
-      
       products.push(tempProducts);
     }
 
     res.status(200).json(products);
-    
   } catch (err) {
     res.status(500).json(err);
   }
@@ -231,21 +215,17 @@ router.put("/out-for-delivery", async (req, res) => {
     outForDelivery: 1,
     isDelivered: 0,
   });
-  
+
   let products = [];
   try {
     const order = await Orders.find({ outForDelivery: 0 });
-   
 
     for (let i = 0; i < order.length; i++) {
-      
-      
       const address = await shipping.findOne({ _id: order[i].address_id });
       let tempProducts = [order[i]._id];
-     
 
       const length = order[i].products.length;
-     
+
       for (let j = 0; j < length; j++) {
         let menus = await menu.find({ _id: order[i].products[j].ProductId });
         menus.map((item) => {
@@ -261,36 +241,37 @@ router.put("/out-for-delivery", async (req, res) => {
           });
         });
       }
-      
+
       tempProducts.push({ orderId: order[i]._id, address: address });
 
-      
       products.push(tempProducts);
     }
 
     res.status(200).json(products);
-   
   } catch (err) {
     res.status(500).json(err);
   }
 });
 router.put("/delivered", async (req, res) => {
+  // console.log(req.body.deliveryBoyId);
   const updateFoodReady = await Orders.findByIdAndUpdate(req.body.orderId, {
     isDelivered: 1,
+    deliveryBoyId: req.body.deliveryBoyId,
   });
-  
+  console.log(updateFoodReady);
   let products = [];
   try {
     const order = await Orders.find({ outForDelivery: 1 });
-   
 
     for (let i = 0; i < order.length; i++) {
-      
       const address = await shipping.findOne({ _id: order[i].address_id });
+      const deliveryBoyId = await deliveryboy.findOne({
+        _id: order[i].deliveryBoyId,
+      });
       let tempProducts = [];
-      
+
       const length = order[i].products.length;
-      
+
       for (let j = 0; j < length; j++) {
         let menus = await menu.find({ _id: order[i].products[j].ProductId });
         menus.map((item) => {
@@ -306,37 +287,37 @@ router.put("/delivered", async (req, res) => {
           });
         });
       }
-      
-      tempProducts.push({ orderId: order[i]._id, address: address, isDelivered: order[i].isDelivered, });
 
-      
+      tempProducts.push({
+        orderId: order[i]._id,
+        address: address,
+        deliveryBoyAddress: deliveryBoyId,
+        isDelivered: order[i].isDelivered,
+      });
+
       products.push(tempProducts);
     }
 
     res.status(200).json(products);
-    
   } catch (err) {
     res.status(500).json(err);
   }
 });
 router.get(`/delivered-order`, async (req, res) => {
-  
   let products = [];
 
   try {
     const order = await Orders.find({ outForDelivery: 1 });
-   
 
     for (let i = 0; i < order.length; i++) {
-      
-
-      
       const address = await shipping.findOne({ _id: order[i].address_id });
+      const deliveryBoyId = await deliveryboy.findOne({
+        _id: order[i].deliveryBoyId,
+      });
       let tempProducts = [];
-      
 
       const length = order[i].products.length;
-      
+
       for (let j = 0; j < length; j++) {
         let menus = await menu.find({ _id: order[i].products[j].ProductId });
         menus.map((item) => {
@@ -352,19 +333,22 @@ router.get(`/delivered-order`, async (req, res) => {
           });
         });
       }
-      
+
       tempProducts.push({
+        totalAmount: tempProducts.reduce(
+          (total, item) => total + Number(item.price) * Number(item.quantity),
+          0
+        ),
         orderId: order[i]._id,
         address: address,
+        deliveryBoyAddress: deliveryBoyId,
         isDelivered: order[i].isDelivered,
       });
 
-      
       products.push(tempProducts);
     }
 
     res.status(200).json(products);
-   
   } catch (err) {
     res.status(500).json(err);
   }
