@@ -1,3 +1,5 @@
+/** @format */
+
 const mongoose = require("mongoose");
 
 const restaurantSchema = mongoose.Schema({
@@ -9,7 +11,6 @@ const restaurantSchema = mongoose.Schema({
   license: {
     type: String,
   },
-  
 
   phone: {
     type: String,
@@ -23,17 +24,25 @@ const restaurantSchema = mongoose.Schema({
     max: 50,
   },
 
-  address: {
+  pincode: {
+    type: Number,
+  },
+  city: {
     type: String,
+  },
+  state: {
+    type: String,
+  },
 
-    min: 5,
+  country: {
+    type: String,
   },
 
   isRejected: {
     type: Number,
     default: 0,
   },
-  
+
   isApproved: {
     type: Number,
     default: 0,
@@ -49,15 +58,15 @@ const restaurantSchema = mongoose.Schema({
   about: {
     type: String,
   },
-  ownername:{
-    type:String,
+  ownername: {
+    type: String,
   },
-  ownerphone:{
-    type:String,
+  ownerphone: {
+    type: String,
   },
-  restImg:{
-    type:String,
-  }
+  restImg: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Restaurant", restaurantSchema);

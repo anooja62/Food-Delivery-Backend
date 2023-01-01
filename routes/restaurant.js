@@ -9,7 +9,10 @@ router.post("/add-restaurent", async (req, res) => {
       name: req.body.name,
       phone: req.body.phone,
       email: req.body.email,
-      address: req.body.address,
+     city:req.body.city,
+     state:req.body.state,
+     pincode:req.body.pincode,
+     country:req.body.country,
       imgUrl: req.body.imgUrl,
       license: req.body.license,
     });
