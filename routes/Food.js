@@ -1,3 +1,5 @@
+/** @format */
+
 const router = require("express").Router();
 const menu = require("../model/menumodel");
 
@@ -15,6 +17,7 @@ router.post("/add-menu", async (req, res) => {
     const allMenu = await menu.find({
       restaurantId: req.body.restaurantId,
       isDeleted: 0,
+      
     });
 
     res.status(201).json(menus);
@@ -25,9 +28,7 @@ router.post("/add-menu", async (req, res) => {
 });
 router.get(`/single-menu/:id`, async (req, res) => {
   try {
-    const singleMenu = await menu.findOne({ _id:req.params.id,
-      isDeleted: 0,
-    });
+    const singleMenu = await menu.findOne({ _id: req.params.id, isDeleted: 0 });
 
     res.status(200).json(singleMenu);
   } catch (err) {
@@ -40,6 +41,7 @@ router.get(`/all-menu/:id`, async (req, res) => {
     const allMenu = await menu.find({
       restaurantId: req.params.id,
       isDeleted: 0,
+     
     });
 
     res.status(200).json(allMenu);
@@ -62,31 +64,37 @@ router.put("/delete/:id", async (req, res) => {
     return res.status(500).json(err);
   }
 });
-router.put("/update/:id", async (req, res) => {
- 
+router.put("/available/:id", async (req, res) => {
   try {
-    if(req.body.imgUrl){
+    const menus = await menu.findByIdAndUpdate(req.params.id, {
+      isAvailable: 1,
+    });
+    const allMenu = await menu.find({
+      isAvailable: 0,
+    });
+    res.status(200).json(allMenu);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+});
+router.put("/update/:id", async (req, res) => {
+  try {
+    if (req.body.imgUrl) {
       const menus = await menu.findByIdAndUpdate(req.params.id, {
         foodname: req.body.foodname,
         price: req.body.price,
         category: req.body.category,
         imgUrl: req.body.imgUrl,
-        
-      })
-      console.log(menus)
-    }else{
+      });
+      console.log(menus);
+    } else {
       const menus = await menu.findByIdAndUpdate(req.params.id, {
         foodname: req.body.foodname,
         price: req.body.price,
         category: req.body.category,
-       
-        
-      })
-      
-    
-      
+      });
     }
-   
+
     res.status(200).json("updated");
   } catch (err) {
     return res.status(500).json(err);

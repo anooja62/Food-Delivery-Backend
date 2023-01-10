@@ -23,6 +23,10 @@ const foodSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  isAvailable: {
+    type: Number,
+    default: 0,
+  },
   restaurantId: {
     type: String,
 
