@@ -32,6 +32,7 @@ const foodSchema = new mongoose.Schema({
 
     require: true,
   },
+  
  }, { timestamps: true });
 
 // create model

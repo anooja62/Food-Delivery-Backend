@@ -24,20 +24,10 @@ const restaurantSchema = mongoose.Schema({
     max: 50,
   },
 
-  pincode: {
-    type: Number,
-  },
-  city: {
+  address: {
     type: String,
   },
-  state: {
-    type: String,
-  },
-
-  country: {
-    type: String,
-  },
-
+ 
   isRejected: {
     type: Number,
     default: 0,

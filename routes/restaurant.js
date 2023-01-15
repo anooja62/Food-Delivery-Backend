@@ -9,10 +9,9 @@ router.post("/add-restaurent", async (req, res) => {
       name: req.body.name,
       phone: req.body.phone,
       email: req.body.email,
-     city:req.body.city,
-     state:req.body.state,
-     pincode:req.body.pincode,
-     country:req.body.country,
+     address:req.body.address,
+    
+    
       imgUrl: req.body.imgUrl,
       license: req.body.license,
     });
@@ -137,7 +136,8 @@ router.get(`/single-rest/:id`, async (req, res) => {
 router.get("/all-restaurent", async (req, res) => {
   try {
     const allRestaurent = await restaurant.find({
-      isRejected: 0,
+     
+       isRejected: 0,
     });
 
     res.status(200).json(allRestaurent);
@@ -179,5 +179,18 @@ router.put("/reject/:id", async (req, res) => {
     return res.status(500).json(err);
   }
 });
-
+router.get("/search/:address", async (req, res) => {
+ 
+    try {
+      const allRestaurent = await restaurant.find({
+        
+        isRejected: 0,
+      });
+  
+      res.status(200).json(allRestaurent);
+    } catch (err) {
+      res.status(500).json(err);
+      console.log(err);
+    }
+});
 module.exports = router;

@@ -31,7 +31,8 @@ const userSchema = mongoose.Schema({
   },
   otp:{
     type:Number,
-  }
+  },
+
 });
 
 module.exports = mongoose.model("Registeration", userSchema);

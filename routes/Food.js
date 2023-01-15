@@ -42,6 +42,7 @@ router.get(`/all-menu/:id`, async (req, res) => {
       restaurantId: req.params.id,
       isDeleted: 0,
      
+     
     });
 
     res.status(200).json(allMenu);
@@ -67,10 +68,10 @@ router.put("/delete/:id", async (req, res) => {
 router.put("/available/:id", async (req, res) => {
   try {
     const menus = await menu.findByIdAndUpdate(req.params.id, {
-      isAvailable: 1,
+     isAvailable : 1,
     });
     const allMenu = await menu.find({
-      isAvailable: 0,
+      isDeleted: 0,
     });
     res.status(200).json(allMenu);
   } catch (err) {
