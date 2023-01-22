@@ -1,3 +1,5 @@
+/** @format */
+
 const router = require("express").Router();
 const restaurant = require("../model/restaurantmodel");
 const bcrypt = require("bcrypt");
@@ -9,9 +11,7 @@ router.post("/add-restaurent", async (req, res) => {
       name: req.body.name,
       phone: req.body.phone,
       email: req.body.email,
-     address:req.body.address,
-    
-    
+      address: req.body.address,
       imgUrl: req.body.imgUrl,
       license: req.body.license,
     });
@@ -110,9 +110,7 @@ router.get(`/res-details/:id`, async (req, res) => {
       restaurantId: req.params.id,
       isRejected: 0,
     });
-    allRestaurent.filter((item) => {
-      item.expiredate <= new Date();
-    });
+
     res.status(200).json(allRestaurent);
   } catch (err) {
     res.status(500).json(err);
@@ -136,8 +134,7 @@ router.get(`/single-rest/:id`, async (req, res) => {
 router.get("/all-restaurent", async (req, res) => {
   try {
     const allRestaurent = await restaurant.find({
-     
-       isRejected: 0,
+      isRejected: 0,
     });
 
     res.status(200).json(allRestaurent);
@@ -156,7 +153,7 @@ router.get("/parsed-restaurent", async (req, res) => {
     let tempArr = [];
 
     allRestaurent.map((item) =>
-      tempArr.push({ label: item.name, value: item._id ,address:item.address })
+      tempArr.push({ label: item.name, value: item._id, address: item.address })
     );
 
     res.status(200).json(tempArr);
@@ -179,18 +176,16 @@ router.put("/reject/:id", async (req, res) => {
     return res.status(500).json(err);
   }
 });
-router.get("/search/:address", async (req, res) => {
- 
-    try {
-      const allRestaurent = await restaurant.find({
-        
-        isRejected: 0,
-      });
-  
-      res.status(200).json(allRestaurent);
-    } catch (err) {
-      res.status(500).json(err);
-      console.log(err);
-    }
+router.get(`/search/:address`, async (req, res) => {
+  try {
+    const allRestaurent = await restaurant.find({
+      address: { $in: [req.params.address] },
+    });
+
+    res.status(200).json(allRestaurent);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
 });
 module.exports = router;

@@ -33,6 +33,6 @@ const userSchema = mongoose.Schema({
     type:Number,
   },
 
-});
+},{timestamps: true});
 
 module.exports = mongoose.model("Registeration", userSchema);
