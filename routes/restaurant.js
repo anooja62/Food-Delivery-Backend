@@ -179,9 +179,8 @@ router.put("/reject/:id", async (req, res) => {
 router.get(`/search/:address`, async (req, res) => {
   try {
     const allRestaurent = await restaurant.find({
-      address: { $in: [req.params.address] },
+      $text: { $search: req.params.address },
     });
-
     res.status(200).json(allRestaurent);
   } catch (err) {
     res.status(500).json(err);

@@ -17,7 +17,6 @@ router.post("/add-menu", async (req, res) => {
     const allMenu = await menu.find({
       restaurantId: req.body.restaurantId,
       isDeleted: 0,
-      
     });
 
     res.status(201).json(menus);
@@ -41,8 +40,6 @@ router.get(`/all-menu/:id`, async (req, res) => {
     const allMenu = await menu.find({
       restaurantId: req.params.id,
       isDeleted: 0,
-     
-     
     });
 
     res.status(200).json(allMenu);
@@ -65,13 +62,20 @@ router.put("/delete/:id", async (req, res) => {
     return res.status(500).json(err);
   }
 });
-router.put("/available/:id", async (req, res) => {
+router.post("/available/:id", async (req, res) => {
   try {
-    const menus = await menu.findByIdAndUpdate(req.params.id, {
-     isAvailable : 1,
-    });
+    if (req.body.available) {
+      const menus = await menu.findByIdAndUpdate(req.body.id, {
+        isAvailable: 0,
+      });
+    } else {
+      const menus = await menu.findByIdAndUpdate(req.body.id, {
+        isAvailable: 1,
+      });
+    }
     const allMenu = await menu.find({
       isDeleted: 0,
+      restaurantId: req.body.restaurantId,
     });
     res.status(200).json(allMenu);
   } catch (err) {
