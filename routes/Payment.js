@@ -124,4 +124,32 @@ router.post("/razorpay-callback", async (req, res) => {
   res.json({ status: "ok" });
 });
 
+const months =['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+router.get('/total-amount-per-month', async (req, res) => {
+  try {
+    const payments = await Payment.aggregate([
+      {
+        $group: {
+          _id: { $month: '$createdAt' },
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    const paymentsWithMonthName = payments.map(payment => ({
+      month: months[payment._id - 1],
+      totalAmount: payment.totalAmount,
+    }));
+
+    res.status(200).json({ payments: paymentsWithMonthName });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error' });
+    console.error(error);
+  }
+});
+
+
 module.exports = router;

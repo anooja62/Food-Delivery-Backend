@@ -16,6 +16,7 @@ router.post("/register", async (req, res) => {
       phone: req.body.phone,
       email: req.body.email,
       password: hashedPassword,
+      month:new Date().getMonth() + 1,
      
     });
     const userEmail = await user.findOne({ email: req.body.email });
@@ -178,5 +179,23 @@ router.put("/submit-otp", async (req, res) => {
       res.send({ code: 500, message: "otp is wrong" });
     });
 });
+const getMonthlyUserCount = async () => {
+  const result = await user.aggregate([
+    {
+      $group: {
+        _id: { $month: "$createdAt" },
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  return result;
+};
+
+  router.get("/monthly-user-count", async (req, res) => {
+    const result = await getMonthlyUserCount();
+    res.json(result);
+  });
+  
 
 module.exports = router;

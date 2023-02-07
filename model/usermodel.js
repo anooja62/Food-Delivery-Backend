@@ -1,38 +1,43 @@
+/** @format */
+
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema({
-  name: {
-    type: String,
-  
-  },
-  isAdmin: {
-    type: Boolean,
-  },
-  phone: {
-    type: String,
-  
-  },
+const userSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+    },
+    isAdmin: {
+      type: Boolean,
+    },
+    phone: {
+      type: String,
+    },
 
-  email: {
-    type: String,
-  
-    max: 50,
-  },
+    email: {
+      type: String,
 
-  password: {
-    type: String,
+      max: 50,
+    },
 
-    min: 5,
-  },
+    password: {
+      type: String,
 
-  isBlocked: {
-    type: Number,
-    default: 0,
-  },
-  otp:{
-    type:Number,
-  },
+      min: 5,
+    },
 
-},{timestamps: true});
+    isBlocked: {
+      type: Number,
+      default: 0,
+    },
+    otp: {
+      type: Number,
+    },
+    month: {
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Registeration", userSchema);

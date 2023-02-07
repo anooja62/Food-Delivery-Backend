@@ -25,6 +25,7 @@ router.post("/add-order/:id", async (req, res) => {
       address_id: address_id,
       orderReady: 0,
       status: "captured",
+      orderDate: new Date(),
     });
     const savedOrder = await newOrders.save();
 
@@ -349,6 +350,24 @@ router.get(`/delivered-order`, async (req, res) => {
     }
 
     res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get("/by-month", async (req, res) => {
+  try {
+    const ordersByMonth = await Orders.aggregate([
+      {
+          $group: {
+              _id: { month: { $month: "$createdAt" } },
+              totalOrders: { $sum: 1 }
+          }
+      },
+     
+  ]);
+
+    res.status(200).json(ordersByMonth);
   } catch (err) {
     res.status(500).json(err);
   }

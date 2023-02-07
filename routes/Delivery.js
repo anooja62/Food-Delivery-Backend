@@ -9,7 +9,7 @@ router.post("/delivery", async (req, res) => {
       name: req.body.name,
       phone: req.body.phone,
       email: req.body.email,
-      city: req.body.city,
+      
       imgUrl: req.body.imgUrl,
     });
     const userEmail = await deliveryboy.findOne({ email: req.body.email });
@@ -48,6 +48,7 @@ router.put("/deliveryboy-pw-update", async (req, res) => {
 });
 //deliveryboy login
 router.post("/delivery-login", async (req, res) => {
+  console.log(req.body);
   try {
     const deliveryboys = await deliveryboy.findOne({ email: req.body.email });
     !deliveryboys && res.status(404).json("User not found");
@@ -82,9 +83,9 @@ router.put("/update-delivery/:id", async (req, res) => {
       phone: req.body.phone,
       email: req.body.email,
       password: hashedPassword,
-
+location:req.body.location,
       profileImg: req.body.profileImg,
-      city: req.body.city,
+     
     });
 
     //save user return response
