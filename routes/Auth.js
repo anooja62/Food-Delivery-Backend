@@ -1,3 +1,5 @@
+/** @format */
+
 const router = require("express").Router();
 const user = require("../model/usermodel");
 const bcrypt = require("bcrypt");
@@ -16,8 +18,6 @@ router.post("/register", async (req, res) => {
       phone: req.body.phone,
       email: req.body.email,
       password: hashedPassword,
-      month:new Date().getMonth() + 1,
-     
     });
     const userEmail = await user.findOne({ email: req.body.email });
     userEmail && res.status(404).json("Email already  Exist!!!");
@@ -179,23 +179,60 @@ router.put("/submit-otp", async (req, res) => {
       res.send({ code: 500, message: "otp is wrong" });
     });
 });
-const getMonthlyUserCount = async () => {
-  const result = await user.aggregate([
-    {
-      $group: {
-        _id: { $month: "$createdAt" },
-        count: { $sum: 1 },
+
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+router.get("/total-registered-users-per-month", async (req, res) => {
+  try {
+    const year = parseInt(req.query.year);
+    const start = new Date(year, 0, 1);
+    const end = new Date(year + 1, 0, 1);
+    const users = await user.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: start, $lt: end }
+        }
       },
-    },
-  ]);
+      {
+        $group: {
+          _id: {
+            month: { $month: "$createdAt" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { "_id.month": 1 },
+      },
+    ]);
 
-  return result;
-};
+    const usersWithMonthName = users.map((user) => ({
+      month: months[user._id.month - 1],
+      year: year,
+      count: user.count,
+    }));
+   
 
-  router.get("/monthly-user-count", async (req, res) => {
-    const result = await getMonthlyUserCount();
-    res.json(result);
-  });
-  
+    res.status(200).json({ users: usersWithMonthName });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+    console.error(error);
+  }
+});
+
+
 
 module.exports = router;

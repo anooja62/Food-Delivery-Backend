@@ -24,7 +24,7 @@ const foodreviewSchema = mongoose.Schema({
       },
 
 
-});
+},{timestamps: true});
 
 
 module.exports = mongoose.model("Review", foodreviewSchema)

@@ -1,7 +1,9 @@
+/** @format */
+
 const router = require("express").Router();
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
-
+const Order =require("../model/ordersmodel");
 const Cart = require("../model/cartmodel");
 const Payment = require("../model/paymentmodel");
 const shipping = require("../model/addressmodel");
@@ -38,13 +40,11 @@ router.post("/orders", async (req, res) => {
         order_id: orderId,
         cart_id: cartId,
         address_id: addressId,
-        isPaymentDone:0
-
+        isPaymentDone: 0,
       };
       const newPayment = new Payment(payment);
       try {
         const savedPayment = newPayment.save();
-        
       } catch (err) {}
     });
   } catch (error) {
@@ -57,7 +57,7 @@ router.post("/verify", async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
-    
+
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSign = crypto
       .createHmac("sha256", "oePZv1JdSwiEamTJWy45NG6G")
@@ -65,9 +65,7 @@ router.post("/verify", async (req, res) => {
       .digest("hex");
 
     if (razorpay_signature === expectedSign) {
-     
       try {
-        
       } catch (err) {
         res.status(500).json(err);
       }
@@ -75,10 +73,9 @@ router.post("/verify", async (req, res) => {
 
       const pay_id = paymentId._id;
       const updatePayment = await Payment.findByIdAndUpdate(pay_id, {
-        status: "caputured"
-       
+        status: "caputured",
       });
-      
+
       return res.status(200).json({
         message: "Payment verified successfully and cart deleted successfully",
       });
@@ -95,8 +92,6 @@ router.post("/razorpay-callback", async (req, res) => {
   // do a validation
   const secret = "123456789";
 
-  
-
   const crypto = require("crypto");
 
   const shasum = crypto.createHmac("sha256", secret);
@@ -112,44 +107,57 @@ router.post("/razorpay-callback", async (req, res) => {
   const updatePayment = await Payment.findByIdAndUpdate(pay_id, {
     status: status,
     method: method,
-    isPaymentDone:1
+    isPaymentDone: 1,
   });
 
-  
   if (digest === req.headers["x-razorpay-signature"]) {
-    
   } else {
     console.log("error in verifications");
   }
   res.json({ status: "ok" });
 });
 
-const months =['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-router.get('/total-amount-per-month', async (req, res) => {
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+router.get("/total-amount-per-month", async (req, res) => {
   try {
     const payments = await Payment.aggregate([
       {
         $group: {
-          _id: { $month: '$createdAt' },
-          totalAmount: { $sum: '$amount' },
+          _id: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } },
+          totalAmount: { $sum: "$amount" },
         },
       },
       {
-        $sort: { _id: 1 },
+        $sort: { "_id.year": 1, "_id.month": 1 },
       },
     ]);
 
-    const paymentsWithMonthName = payments.map(payment => ({
-      month: months[payment._id - 1],
+    const paymentsWithMonthName = payments.map((payment) => ({
+      year: payment._id.year,
+      month: months[payment._id.month - 1],
       totalAmount: payment.totalAmount,
     }));
 
     res.status(200).json({ payments: paymentsWithMonthName });
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
     console.error(error);
   }
 });
+
 
 
 module.exports = router;

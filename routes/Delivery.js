@@ -1,3 +1,5 @@
+/** @format */
+
 const router = require("express").Router();
 const deliveryboy = require("../model/deliverymodel");
 const bcrypt = require("bcrypt");
@@ -9,8 +11,8 @@ router.post("/delivery", async (req, res) => {
       name: req.body.name,
       phone: req.body.phone,
       email: req.body.email,
+imgUrl:req.body.imgUrl,
       
-      imgUrl: req.body.imgUrl,
     });
     const userEmail = await deliveryboy.findOne({ email: req.body.email });
     userEmail && res.status(404).json("Email already Exist!!!");
@@ -83,9 +85,8 @@ router.put("/update-delivery/:id", async (req, res) => {
       phone: req.body.phone,
       email: req.body.email,
       password: hashedPassword,
-location:req.body.location,
+      location: req.body.location,
       profileImg: req.body.profileImg,
-     
     });
 
     //save user return response

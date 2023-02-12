@@ -355,22 +355,5 @@ router.get(`/delivered-order`, async (req, res) => {
   }
 });
 
-router.get("/by-month", async (req, res) => {
-  try {
-    const ordersByMonth = await Orders.aggregate([
-      {
-          $group: {
-              _id: { month: { $month: "$createdAt" } },
-              totalOrders: { $sum: 1 }
-          }
-      },
-     
-  ]);
-
-    res.status(200).json(ordersByMonth);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
 
 module.exports = router;

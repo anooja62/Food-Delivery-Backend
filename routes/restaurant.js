@@ -187,4 +187,77 @@ router.get(`/search/:address`, async (req, res) => {
     console.log(err);
   }
 });
+
+router.put('/restaurants/:id/sentiment-score', async (req, res) => {
+  try {
+   
+    const restaurants = await restaurant.findById(req.params.id);
+
+    if (!restaurants) {
+      return res.status(404).json({ message: 'Restaurant not found' });
+    }
+
+    
+    restaurants.sentimentScore = req.body.sentimentScore;
+
+    
+    const updatedRestaurant = await restaurants.save();
+
+   
+    res.json(updatedRestaurant);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+router.get('/restaurants/:id/sentiment-score', async (req, res) => {
+  try {
+    const restaurants = await restaurant.findById(req.params.id, 'sentimentScore');
+
+    if (!restaurants) {
+      return res.status(404).json({ message: 'Restaurant not found' });
+    }
+
+    res.json({ sentimentScore: restaurants.sentimentScore });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.get('/sentiment-score-average', async (req, res) => {
+  try {
+    const restaurants = await restaurant.find({}, 'sentimentScore');
+    
+    if (restaurants.length === 0) {
+      return res.status(404).json({ message: 'No restaurants found' });
+    }
+
+    const sentimentScores = restaurants.map(rest => rest.sentimentScore);
+  
+    const sum = sentimentScores.reduce((acc, cur) => acc + cur, 0);
+   
+    const average = sum / sentimentScores.length;
+
+    res.json({ averageSentimentScore: average });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.get('/top-restaurants', async (req, res) => {
+  try {
+    const topRestaurants = await restaurant.find({}, 'name sentimentScore')
+      .sort({ sentimentScore: -1 })
+      .limit(4);
+
+    res.json(topRestaurants);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 module.exports = router;
