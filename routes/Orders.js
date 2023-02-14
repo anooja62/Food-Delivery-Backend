@@ -1,3 +1,5 @@
+/** @format */
+
 const Cart = require("../model/cartmodel");
 const Orders = require("../model/ordersmodel");
 const menu = require("../model/menumodel");
@@ -6,6 +8,7 @@ const router = require("express").Router();
 const Payment = require("../model/paymentmodel");
 const shipping = require("../model/addressmodel");
 const deliveryboy = require("../model/deliverymodel");
+const restaurant = require("../model/restaurantmodel");
 router.post("/add-order/:id", async (req, res) => {
   const findCart = await Cart.findOne({ userId: req.params.id });
 
@@ -254,7 +257,6 @@ router.put("/out-for-delivery", async (req, res) => {
   }
 });
 router.put("/delivered", async (req, res) => {
-  // console.log(req.body.deliveryBoyId);
   const updateFoodReady = await Orders.findByIdAndUpdate(req.body.orderId, {
     isDelivered: 1,
     deliveryBoyId: req.body.deliveryBoyId,
@@ -356,4 +358,92 @@ router.get(`/delivered-order`, async (req, res) => {
 });
 
 
+
+router.get(`/most-popular-foods/:id`, async (req, res) => {
+  try {
+ 
+    const currentRestaurantId = req.params.id 
+
+   
+    const orders = await Orders.find({ restaurantId: currentRestaurantId });
+
+    
+    const popularFoods = {};
+    for (let i = 0; i < orders.length; i++) {
+      const order = orders[i];
+      for (let j = 0; j < order.products.length; j++) {
+        const product = order.products[j];
+        const menus = await menu.findById(product.ProductId); 
+        if (menus && menus.restaurantId === currentRestaurantId) {
+          
+          if (!popularFoods[menus.foodname]) {
+            popularFoods[menus.foodname] = 0;
+          }
+          popularFoods[menus.foodname] += product.quantity;
+        }
+      }
+    }
+
+    
+    const sortedPopularFoods = Object.keys
+    (popularFoods).sort((a, b) => popularFoods[b] - popularFoods[a]);
+   
+    const mostPopularFood = [sortedPopularFoods[0]] 
+if(sortedPopularFoods.length > 1){
+  mostPopularFood.push( sortedPopularFoods[1]
+    )
+}
+   
+    res.status(200).json(mostPopularFood );
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+});
+router.get(`/location-based-delivery/:address`, async (req, res) => {
+  try {
+    const allRestaurent = await restaurant.find({
+      $text: { $search: req.params.address },
+    });
+    const restaurantIds = allRestaurent.map((item) => item._id);
+
+    let products = [];
+
+    const order = await Orders.find({ orderReady: 1, outForDelivery: 0 });
+
+    for (let i = 0; i < order.length; i++) {
+      const address = await shipping.findOne({ _id: order[i].address_id });
+      let tempProducts = [];
+
+      const length = order[i].products.length;
+
+      for (let j = 0; j < length; j++) {
+        let menus = await menu.find({ _id: order[i].products[j].ProductId });
+        menus.map((item) => {
+          const stringIds = restaurantIds.map((id) => id.toString());
+          if (stringIds.indexOf(item.restaurantId) > -1) {
+            tempProducts.push(order[i]._id);
+            tempProducts.push({
+              _id: item._id,
+              foodname: item.foodname,
+              price: item.price,
+              image: item.imgUrl,
+              category: item.category,
+              isDeleted: item.isDeleted,
+              restaurantId: item.restaurantId,
+              quantity: order[i].products[j].quantity,
+            });
+            tempProducts.push({ orderId: order[i]._id, address: address });
+          }
+        });
+      }
+      if (tempProducts.length > 0) products.push(tempProducts);
+    }
+
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+});
 module.exports = router;
