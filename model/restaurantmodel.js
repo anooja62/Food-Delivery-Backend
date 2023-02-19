@@ -59,7 +59,9 @@ const restaurantSchema = mongoose.Schema({
   },
   sentimentScore:{
     type:Number,
+    default:1,
   },
 });
+
 restaurantSchema.index({ address: "text" });
 module.exports = mongoose.model("Restaurant", restaurantSchema);
