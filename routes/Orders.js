@@ -357,25 +357,19 @@ router.get(`/delivered-order`, async (req, res) => {
   }
 });
 
-
-
 router.get(`/most-popular-foods/:id`, async (req, res) => {
   try {
- 
-    const currentRestaurantId = req.params.id 
+    const currentRestaurantId = req.params.id;
 
-   
     const orders = await Orders.find({ restaurantId: currentRestaurantId });
 
-    
     const popularFoods = {};
     for (let i = 0; i < orders.length; i++) {
       const order = orders[i];
       for (let j = 0; j < order.products.length; j++) {
         const product = order.products[j];
-        const menus = await menu.findById(product.ProductId); 
+        const menus = await menu.findById(product.ProductId);
         if (menus && menus.restaurantId === currentRestaurantId) {
-          
           if (!popularFoods[menus.foodname]) {
             popularFoods[menus.foodname] = 0;
           }
@@ -384,17 +378,16 @@ router.get(`/most-popular-foods/:id`, async (req, res) => {
       }
     }
 
-    
-    const sortedPopularFoods = Object.keys
-    (popularFoods).sort((a, b) => popularFoods[b] - popularFoods[a]);
-   
-    const mostPopularFood = [sortedPopularFoods[0]] 
-if(sortedPopularFoods.length > 1){
-  mostPopularFood.push( sortedPopularFoods[1]
-    )
-}
-   
-    res.status(200).json(mostPopularFood );
+    const sortedPopularFoods = Object.keys(popularFoods).sort(
+      (a, b) => popularFoods[b] - popularFoods[a]
+    );
+
+    const mostPopularFood = [sortedPopularFoods[0]];
+    if (sortedPopularFoods.length > 1) {
+      mostPopularFood.push(sortedPopularFoods[1]);
+    }
+
+    res.status(200).json(mostPopularFood);
   } catch (err) {
     console.error(err);
     res.status(500).json(err);
@@ -444,6 +437,71 @@ router.get(`/location-based-delivery/:address`, async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
     console.log(err);
+  }
+});
+
+router.get("/recommendations/:userId", async (req, res) => {
+  const K = 6;
+  try {
+    const userId = req.params.userId;
+    // find the user's past orders
+    const orders = await Orders.find({ userId });
+    function preprocessData(orders) {
+      // create a dictionary of products and their corresponding order history
+      const productHistory = {};
+
+      // iterate over each order and its products
+      for (let order of orders) {
+        for (let product of order.products) {
+          const productId = product.ProductId;
+
+          // if the product doesn't exist in the product history yet, add it
+          if (!productHistory[productId]) {
+            productHistory[productId] = [];
+          }
+
+          // add the current order's quantity to the product's order history
+          productHistory[productId].push(product.quantity);
+        }
+      }
+
+      // calculate the average order quantity for each product
+      const productAverages = {};
+      for (let productId in productHistory) {
+        const orderHistory = productHistory[productId];
+        const sum = orderHistory.reduce((acc, val) => acc + val, 0);
+        const average = sum / orderHistory.length;
+        productAverages[productId] = average;
+      }
+
+      // create an array of objects that represent each product and its average order quantity
+      const data = [];
+      for (let productId in productAverages) {
+        data.push({ productId, orderQuantity: productAverages[productId] });
+      }
+
+      return data;
+    }
+
+    // preprocess the orders data into a suitable format for collaborative filtering
+    const data = preprocessData(orders);
+    // build the recommendation model and generate recommendations
+    function generateRecommendations(data) {
+      // sort the data in descending order of order quantity
+      data.sort((a, b) => b.orderQuantity - a.orderQuantity);
+
+      // return the sorted list of product IDs
+      return data.map((item) => item.productId);
+    }
+
+    const recommendations = generateRecommendations(data);
+    // return the top K recommendations to the user
+    const topK = recommendations.slice(0, K);
+    console.log(topK)
+    res.json({ recommendations: topK });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 module.exports = router;
