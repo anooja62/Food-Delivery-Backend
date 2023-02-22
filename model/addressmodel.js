@@ -1,54 +1,35 @@
+/** @format */
+
 const mongoose = require("mongoose");
 
-const shippingSchema=mongoose.Schema({
-  label:{
-    type:String,
-   
-   
-},
+const shippingSchema = mongoose.Schema({
+  label: {
+    type: String,
+  },
 
-     name:{
-          type:String,
-          require: true,
-          min:3,
-          max:20,
-         
-      },
-    
-      phone:{
-        type:String,
-        require:true,
-        max:11,
-        
-        
-    },
-      
-      pincode:{
-          type:String,
-          require:true,
-          
-         
-      },
-      
-      address:{
-        type:String,
-        require:true,
-        min:5
-    },
-   userId:{
-    type:String,
-    require:true
-   },
-   isDeleted:{
-    type:Number,
-    default:0
-}
+  name: {
+    type: String,
+  },
 
+  phone: {
+    type: String,
+  },
 
+  pincode: {
+    type: String,
+  },
 
-    
+  address: {
+    type: String,
+  },
+  userId: {
+    type: String,
+    require: true,
+  },
+  isDeleted: {
+    type: Number,
+    default: 0,
+  },
 });
 
-
-
-module.exports = mongoose.model("Address",shippingSchema)
+module.exports = mongoose.model("Address", shippingSchema);

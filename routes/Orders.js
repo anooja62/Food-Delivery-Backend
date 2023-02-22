@@ -9,6 +9,8 @@ const Payment = require("../model/paymentmodel");
 const shipping = require("../model/addressmodel");
 const deliveryboy = require("../model/deliverymodel");
 const restaurant = require("../model/restaurantmodel");
+const users =require("../model/usermodel");
+
 router.post("/add-order/:id", async (req, res) => {
   const findCart = await Cart.findOne({ userId: req.params.id });
 
@@ -310,7 +312,7 @@ router.get(`/delivered-order`, async (req, res) => {
   let products = [];
 
   try {
-    const order = await Orders.find({ outForDelivery: 1 });
+    const order = await Orders.find({ isDelivered: 1 });
 
     for (let i = 0; i < order.length; i++) {
       const address = await shipping.findOne({ _id: order[i].address_id });
@@ -504,4 +506,7 @@ router.get("/recommendations/:userId", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+
+
 module.exports = router;
