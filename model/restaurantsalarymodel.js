@@ -6,12 +6,14 @@ const salarySchema = new mongoose.Schema(
   {
     restaurantId: {
       type: String,
+      require: true,
+    },
+    totalOrderAmount: {
+      type: Number,
     },
     salaryamount: {
       type: Number,
     },
-  
-
   },
   { timestamps: true }
 );

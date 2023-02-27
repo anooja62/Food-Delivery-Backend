@@ -396,28 +396,33 @@ router.get(`/most-popular-foods/:id`, async (req, res) => {
   }
 });
 router.get(`/location-based-delivery/:address`, async (req, res) => {
+
   try {
     const allRestaurent = await restaurant.find({
       $text: { $search: req.params.address },
     });
+ 
     const restaurantIds = allRestaurent.map((item) => item._id);
 
     let products = [];
 
     const order = await Orders.find({ orderReady: 1, outForDelivery: 0 });
-
+   
     for (let i = 0; i < order.length; i++) {
       const address = await shipping.findOne({ _id: order[i].address_id });
+      
       let tempProducts = [];
 
       const length = order[i].products.length;
-
+   
       for (let j = 0; j < length; j++) {
+  
         let menus = await menu.find({ _id: order[i].products[j].ProductId });
+    
         menus.map((item) => {
           const stringIds = restaurantIds.map((id) => id.toString());
           if (stringIds.indexOf(item.restaurantId) > -1) {
-            tempProducts.push(order[i]._id);
+            tempProducts.push({orderId: order[i]._id});
             tempProducts.push({
               _id: item._id,
               foodname: item.foodname,
@@ -442,70 +447,7 @@ router.get(`/location-based-delivery/:address`, async (req, res) => {
   }
 });
 
-router.get("/recommendations/:userId", async (req, res) => {
-  const K = 6;
-  try {
-    const userId = req.params.userId;
-    // find the user's past orders
-    const orders = await Orders.find({ userId });
-    function preprocessData(orders) {
-      // create a dictionary of products and their corresponding order history
-      const productHistory = {};
 
-      // iterate over each order and its products
-      for (let order of orders) {
-        for (let product of order.products) {
-          const productId = product.ProductId;
-
-          // if the product doesn't exist in the product history yet, add it
-          if (!productHistory[productId]) {
-            productHistory[productId] = [];
-          }
-
-          // add the current order's quantity to the product's order history
-          productHistory[productId].push(product.quantity);
-        }
-      }
-
-      // calculate the average order quantity for each product
-      const productAverages = {};
-      for (let productId in productHistory) {
-        const orderHistory = productHistory[productId];
-        const sum = orderHistory.reduce((acc, val) => acc + val, 0);
-        const average = sum / orderHistory.length;
-        productAverages[productId] = average;
-      }
-
-      // create an array of objects that represent each product and its average order quantity
-      const data = [];
-      for (let productId in productAverages) {
-        data.push({ productId, orderQuantity: productAverages[productId] });
-      }
-
-      return data;
-    }
-
-    // preprocess the orders data into a suitable format for collaborative filtering
-    const data = preprocessData(orders);
-    // build the recommendation model and generate recommendations
-    function generateRecommendations(data) {
-      // sort the data in descending order of order quantity
-      data.sort((a, b) => b.orderQuantity - a.orderQuantity);
-
-      // return the sorted list of product IDs
-      return data.map((item) => item.productId);
-    }
-
-    const recommendations = generateRecommendations(data);
-    // return the top K recommendations to the user
-    const topK = recommendations.slice(0, K);
-    console.log(topK)
-    res.json({ recommendations: topK });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
 
 
 
