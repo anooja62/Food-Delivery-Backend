@@ -54,7 +54,7 @@ router.put(`/pay-salary/:id`, async (req, res) => {
       }
     }
 
-    const restaurantSalary = totalOrderAmount * 0.5;
+    const restaurantSalary = totalOrderAmount * 0.6;
 
     const salaryDoc = new salary({
       restaurantId: req.params.id,
@@ -138,7 +138,7 @@ router.get('/monthly-salary/:id', async (req, res) => {
         }
       }
 
-      const restaurantSalary = totalOrderAmount * 0.5;
+      const restaurantSalary = totalOrderAmount * 0.6;
       totalSalary += restaurantSalary;
 
       salaryData.push({

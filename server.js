@@ -16,6 +16,7 @@ const paymentRoutes = require("./routes/Payment");
 const orderRoutes = require("./routes/Orders");
 const checklistRoutes = require("./routes/Checklist")
 const salaryRoutes = require("./routes/Salary");
+const feedbackRoutes = require("./routes/FeedBack")
 //app config
 const app = express();
 const port = 9000;
@@ -48,7 +49,7 @@ app.use("/pay", paymentRoutes);
 app.use("/order", orderRoutes);
 app.use("/check",checklistRoutes)
 app.use("/salary",salaryRoutes)
-
+app.use("/feed",feedbackRoutes)
 app.listen(port, () => {
   console.log(`listening in : ${port}`);
 });
