@@ -4,7 +4,8 @@ const router = require("express").Router();
 const user = require("../model/usermodel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-
+const tf = require("@tensorflow/tfjs");
+const FeedBack = require("../model/feedbackmodel")
 router.post("/register", async (req, res) => {
   try {
     //generate new password
