@@ -125,6 +125,7 @@ router.get("/hygiene-prediction", async (req, res) => {
       }
 
       restaurantData.push({
+        restaurantId: rest._id,
         restaurantName: rest.name,
         address: rest.address,
         hygieneLevel,
