@@ -130,7 +130,59 @@ router.get(`/get-resturant-order/:id`, async (req, res) => {
     res.status(500).json(err);
   }
 });
+router.get(`/resturant-order-history/:id`, async (req, res) => {
+  let products = [];
+  try {
+    try {
+      const order = await Orders.find({ orderReady: 1 });
 
+      for (let i = 0; i < order.length; i++) {
+        let tempProducts = [order[i]._id];
+
+        const length = order[i].products.length;
+
+        for (let j = 0; j < length; j++) {
+          let menus = await menu.find({ _id: order[i].products[j].ProductId });
+          menus.map((item) => {
+            return tempProducts.push({
+              _id: item._id,
+              foodname: item.foodname,
+              price: item.price,
+              image: item.imgUrl,
+              category: item.category,
+              isDeleted: item.isDeleted,
+              restaurantId: item.restaurantId,
+              quantity: order[i].products[j].quantity,
+             
+             
+            });
+          });
+        
+        }
+       
+        let filtered = [];
+        let unSkip = false;
+        filtered = tempProducts.filter((item) => {
+          if (item.restaurantId === req.params.id) {
+            unSkip = true;
+          }
+
+          return item.restaurantId === req.params.id;
+        });
+        if (unSkip) {
+          filtered.push(order[i]._id);
+          products.push(filtered);
+        }
+      }
+
+      res.status(200).json(products);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 router.put("/order-ready", async (req, res) => {
   try {
     const updateFoodReady = await Orders.findByIdAndUpdate(req.body.id, {
@@ -190,7 +242,7 @@ router.get(`/get-delivery-order/:id`, async (req, res) => {
 
     for (let i = 0; i < order.length; i++) {
       const address = await shipping.findOne({ _id: order[i].address_id });
-      console.log(order[i].address_id, "jhgf");
+      
       let tempProducts = [order[i]._id];
 
       const length = order[i].products.length;
