@@ -1,8 +1,12 @@
+/** @format */
+
 const router = require("express").Router();
 const FeedBack = require("../model/feedbackmodel");
 const tf = require("@tensorflow/tfjs");
 const Checklist = require("../model/checklistmodel");
 const restaurant = require("../model/restaurantmodel");
+const Order = require("../model/ordersmodel");
+
 router.post("/feedback", async (req, res) => {
   const {
     userId,
@@ -13,24 +17,31 @@ router.post("/feedback", async (req, res) => {
     foodTaste,
     overallExperience,
     currentDate,
+    orderId,
   } = req.body;
-try {
-  const newFeedback = new FeedBack({
-    userId,
-    restaurantId,
-    foodPackaging,
-    foodHandling,
-    foodQuality,
-    foodTaste,
-    overallExperience,
-    currentDate,
-  });
-  await newFeedback.save();
-  res.status(201).json({ message: "Feedback saved successfully" });
-} catch (error) {
-  console.error(error);
-  res.status(500).json({ message: "Error saving feedback" });
-}
+  try {
+    const newFeedback = new FeedBack({
+      userId,
+      restaurantId,
+      foodPackaging,
+      foodHandling,
+      foodQuality,
+      foodTaste,
+      overallExperience,
+      currentDate,
+      orderId,
+    });
+    await newFeedback.save();
+    console.log("updating order...");
+    await Order.findOneAndUpdate({ _id: orderId }, { isReviewed: true }, { new: true });
+    console.log("order updated successfully");
+    
+
+    res.status(201).json({ message: "Feedback saved successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error saving feedback" });
+  }
 });
 const model = tf.sequential();
 model.add(tf.layers.dense({ inputShape: [6], units: 1 }));
@@ -45,25 +56,36 @@ router.post("/train", async (req, res) => {
       .filter((item) => item.restaurantId === feedback.restaurantId)
       .sort((a, b) => new Date(b.date) - new Date(a.date));
     const latestChecklist = checklist[0];
-  
+
     return [
-      Number(latestChecklist.foodPackagingSanitized === "yes"),
+      Number(latestChecklist?.foodPackagingSanitized === "yes"),
+
       Number(latestChecklist.utensilsSanitized === "yes"),
-      Number(feedback.foodPackaging === "good" || feedback.foodPackaging === "excellent"),
-      Number(feedback.foodQuality === "good" || feedback.foodQuality === "excellent"),
-      Number(feedback.foodTaste === "good" || feedback.foodTaste === "excellent"),
-      Number(latestChecklist.cleanlinessRating === 4 || latestChecklist.cleanlinessRating === 5 ? 1 : 0),
+      Number(
+        feedback.foodPackaging === "good" ||
+          feedback.foodPackaging === "excellent"
+      ),
+      Number(
+        feedback.foodQuality === "good" || feedback.foodQuality === "excellent"
+      ),
+      Number(
+        feedback.foodTaste === "good" || feedback.foodTaste === "excellent"
+      ),
+      Number(
+        latestChecklist.cleanlinessRating === 4 ||
+          latestChecklist.cleanlinessRating === 5
+          ? 1
+          : 0
+      ),
     ];
   });
-  
-  
 
   const targetData = feedbackData.map((feedback) => {
     return [
       Number(
         feedback.overallExperience === "excellent" ||
-        feedback.overallExperience === "good"
-      )
+          feedback.overallExperience === "good"
+      ),
     ];
   });
 
@@ -90,24 +112,33 @@ router.get("/hygiene-prediction", async (req, res) => {
       }
 
       const checklist = checklistData
-      .filter((item) => item.restaurantId === restaurantId)
-      .sort((a, b) => new Date(b.date) - new Date(a.date));
-    const latestChecklist = checklist[0];
+        .filter((item) => item.restaurantId === restaurantId)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+      const latestChecklist = checklist[0];
 
-    const rest = await restaurant.findOne({ _id: restaurantId });
-
+      const rest = await restaurant.findOne({ _id: restaurantId });
 
       const features = [
-        Number(latestChecklist.foodPackagingSanitized === "yes"),
-        Number(latestChecklist.utensilsSanitized === "yes"),
+        Number(latestChecklist?.foodPackagingSanitized === "yes"),
+
+        Number(latestChecklist?.utensilsSanitized === "yes"),
         Number(
-          feedback.foodPackaging === "good" || feedback.foodPackaging === "excellent"
+          feedback.foodPackaging === "good" ||
+            feedback.foodPackaging === "excellent"
         ),
         Number(
-          feedback.foodQuality === "good" || feedback.foodQuality === "excellent"
+          feedback.foodQuality === "good" ||
+            feedback.foodQuality === "excellent"
         ),
-        Number(feedback.foodTaste === "good" || feedback.foodTaste === "excellent"),
-        Number(latestChecklist.cleanlinessRating === 4 || latestChecklist.cleanlinessRating === 5 ? 1 : 0),
+        Number(
+          feedback.foodTaste === "good" || feedback.foodTaste === "excellent"
+        ),
+        Number(
+          latestChecklist?.cleanlinessRating === 4 ||
+            latestChecklist?.cleanlinessRating === 5
+            ? 1
+            : 0
+        ),
       ];
 
       const input = tf.tensor2d([features]);

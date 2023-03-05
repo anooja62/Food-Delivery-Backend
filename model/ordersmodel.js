@@ -37,7 +37,11 @@ const OrdersSchema = new mongoose.Schema(
     ],
     orderDate:{
       type:Date,
-    }
+    },
+    isReviewed: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

@@ -32,6 +32,9 @@ const feedbackSchema = mongoose.Schema(
     currentDate: {
       type: Date,
     },
+    orderId:{
+      type:String,
+    }
   },
   { timestamps: true }
 );

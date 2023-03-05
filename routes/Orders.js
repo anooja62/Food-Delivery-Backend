@@ -64,12 +64,15 @@ router.get(`/get-order/:id`, async (req, res) => {
             isDeleted: item.isDeleted,
             restaurantId: item.restaurantId,
             restaurantName: restaurants.name,
+           
             quantity: order[i].products[j].quantity,
             status:
               (order[i].isDelivered === 1 && 2) ||
               (order[i].outForDelivery === 1 && 1) ||
               (order[i].outForDelivery === 0 && 0) ||
               (order[i].orderReady === 0 && 0),
+              orderId:order[i]._id,
+              isReviewed:order[i].isReviewed,
           });
         });
       }
