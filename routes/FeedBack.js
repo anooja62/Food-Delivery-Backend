@@ -33,9 +33,12 @@ router.post("/feedback", async (req, res) => {
     });
     await newFeedback.save();
     console.log("updating order...");
-    await Order.findOneAndUpdate({ _id: orderId }, { isReviewed: true }, { new: true });
+    await Order.findOneAndUpdate(
+      { _id: orderId },
+      { isReviewed: true },
+      { new: true }
+    );
     console.log("order updated successfully");
-    
 
     res.status(201).json({ message: "Feedback saved successfully" });
   } catch (error) {
@@ -169,6 +172,54 @@ router.get("/hygiene-prediction", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching restaurant data" });
+  }
+});
+router.get("/hygienereport/:id", async (req, res) => {
+  try {
+    const feedback = await FeedBack.find({ restaurantId: req.params.id });
+
+    const featureMap = {};
+
+    feedback.forEach((feedbackItem) => {
+      Object.keys(feedbackItem._doc).forEach((key) => {
+        if (
+          key !== "_id" &&
+          key !== "userId" &&
+          key !== "restaurantId" &&
+          key !== "currentDate" &&
+          key !== "createdAt" &&
+          key !== "updatedAt" &&
+          key !== "__v" &&
+          key !== "orderId"
+        ) {
+          const featureValue = feedbackItem._doc[key];
+          if (featureMap.hasOwnProperty(key)) {
+            if (featureMap[key].hasOwnProperty(featureValue)) {
+              featureMap[key][featureValue]++;
+            } else {
+              featureMap[key][featureValue] = 1;
+            }
+          } else {
+            featureMap[key] = {};
+            featureMap[key][featureValue] = 1;
+          }
+        }
+      });
+    });
+
+    Object.keys(featureMap).forEach((key) => {
+      const totalFeedback = feedback.length;
+      Object.keys(featureMap[key]).forEach((featureValue) => {
+        const featureValueCount = featureMap[key][featureValue];
+        featureMap[key][featureValue] = Math.round(
+          (featureValueCount / totalFeedback) * 100
+        );
+      });
+    });
+
+    res.json(featureMap);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
