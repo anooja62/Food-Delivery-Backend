@@ -57,6 +57,28 @@ router.put(`/update-inspection/:id`, async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+router.put(`/update-inspection-report/:id`, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const inspection = await Inspection.findById(id);
+
+    if (!inspection) {
+      return res.status(404).send('Inspection not found');
+    }
+
+    inspection.inspectorName = req.body.inspectorName;
+    inspection.inspectionResults = req.body.inspectionResults;
+    inspection.inspectionRating = req.body.inspectionRating;
+
+    await inspection.save();
+
+    res.send('Inspection updated successfully');
+  } catch (err) {
+    console.log(err);
+    res.status(500).send('Server error');
+  }
+});
+
 
 
 module.exports = router;

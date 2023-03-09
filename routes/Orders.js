@@ -474,7 +474,7 @@ router.get(`/location-based-delivery/:address`, async (req, res) => {
     for (let i = 0; i < order.length; i++) {
       const address = await shipping.findOne({ _id: order[i].address_id });
 
-      let tempProducts = [];
+      let tempProducts = []; 
 
       const length = order[i].products.length;
 
@@ -484,7 +484,7 @@ router.get(`/location-based-delivery/:address`, async (req, res) => {
         menus.map((item) => {
           const stringIds = restaurantIds.map((id) => id.toString());
           if (stringIds.indexOf(item.restaurantId) > -1) {
-            tempProducts.push({ orderId: order[i]._id });
+            
             tempProducts.push({
               _id: item._id,
               foodname: item.foodname,
@@ -493,13 +493,16 @@ router.get(`/location-based-delivery/:address`, async (req, res) => {
               category: item.category,
               isDeleted: item.isDeleted,
               restaurantId: item.restaurantId,
+              orderId: order[i]._id,
               quantity: order[i].products[j].quantity,
             });
-            tempProducts.push({ orderId: order[i]._id, address: address });
           }
         });
       }
-      if (tempProducts.length > 0) products.push(tempProducts);
+      if (tempProducts.length > 0) {
+        
+        products.push([...tempProducts, { orderId: order[i]._id, address: address }]);
+      }
     }
 
     res.status(200).json(products);
@@ -508,6 +511,7 @@ router.get(`/location-based-delivery/:address`, async (req, res) => {
     console.log(err);
   }
 });
+
 router.get(`/accepted-orders-by-deliveryboy/:id`, async (req, res) => {
   try {
     const allRestaurent = await restaurant.find();
@@ -545,6 +549,7 @@ router.get(`/accepted-orders-by-deliveryboy/:id`, async (req, res) => {
             tempProducts.push({ orderId: order[i]._id, address: address });
           }
         });
+       
       }
       if (tempProducts.length > 0) products.push(tempProducts);
     }
@@ -555,6 +560,7 @@ router.get(`/accepted-orders-by-deliveryboy/:id`, async (req, res) => {
     console.log(err);
   }
 });
+
 router.get(`/orders-history-for-deliveryboy/:id`, async (req, res) => {
   try {
     const allRestaurent = await restaurant.find();

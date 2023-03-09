@@ -18,6 +18,15 @@ const inspectionSchema = mongoose.Schema(
       type: Boolean,
       default: 0,
     },
+    inspectorName:{
+      type: String,
+    },
+    inspectionResults:{
+      type: String,
+    },
+    inspectionRating:{
+      type:Number,
+    }
   },
   { timestamps: true }
 );
