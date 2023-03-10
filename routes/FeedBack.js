@@ -222,5 +222,92 @@ router.get("/hygienereport/:id", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+router.get("/accuracy", async (req, res) => {
+  try {
+    const feedbackData = await FeedBack.find();
+    const checklistData = await Checklist.find();
+
+    const trainingData = feedbackData.map((feedback) => {
+      const checklist = checklistData
+        .filter((item) => item.restaurantId === feedback.restaurantId)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+      const latestChecklist = checklist[0];
+
+      return [
+        tf.cast(latestChecklist?.foodPackagingSanitized === "yes", "bool"),
+        tf.cast(latestChecklist?.utensilsSanitized === "yes", "bool"),
+        tf.cast(
+          feedback.foodPackaging === "good" ||
+            feedback.foodPackaging === "excellent",
+          "bool"
+        ),
+        tf.cast(
+          feedback.foodQuality === "good" ||
+            feedback.foodQuality === "excellent",
+          "bool"
+        ),
+        tf.cast(
+          feedback.foodTaste === "good" || feedback.foodTaste === "excellent",
+          "bool"
+        ),
+        tf.cast(
+          latestChecklist?.cleanlinessRating === 4 ||
+            latestChecklist?.cleanlinessRating === 5,
+          "bool"
+        ),
+      ];
+    });
+
+    const targetData = feedbackData.map((feedback) => {
+      return [
+        tf.cast(
+          feedback.overallExperience === "excellent" ||
+            feedback.overallExperience === "good",
+          "bool"
+        ),
+      ];
+    });
+
+    const xs = tf.tensor2d(trainingData, [
+      trainingData.length,
+      trainingData[0].length,
+    ]);
+    const ys = tf.tensor2d(targetData, [
+      targetData.length,
+      targetData[0].length,
+    ]);
+
+    const predictions = model.predict(xs).cast("bool").round();
+
+    const ysBool = ys.cast("bool").greater(0.5);
+    const fpTensor = tf.logicalAnd(predictions.logicalNot(), ysBool);
+    const fnTensor = tf.logicalAnd(predictions, ysBool.logicalNot());
+
+    const tp = predictions.logicalAnd(ysBool).sum().dataSync()[0];
+    const fp = fpTensor.sum().dataSync()[0];
+    const fn = fnTensor.sum().dataSync()[0];
+
+    const precision = tp / (tp + fp);
+    const recall = tp / (tp + fn);
+    const f1Score = (2 * (precision * recall)) / (precision + recall);
+    const Nn = feedbackData.length - tp - fn;
+    const tn = Nn - fp;
+
+    const accuracy = (tp + tn) / (tp + tn + fp + fn);
+    const confusionMatrix = {
+      truePositives: tp,
+      falsePositives: fp,
+      trueNegatives: tn,
+      falseNegatives: fn,
+    };
+
+    res
+      .status(200)
+      .json({ accuracy: accuracy, confusionMatrix: confusionMatrix });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error calculating accuracy" });
+  }
+});
 
 module.exports = router;

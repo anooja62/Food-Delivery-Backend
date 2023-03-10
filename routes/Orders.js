@@ -42,7 +42,9 @@ router.post("/add-order/:id", async (req, res) => {
 router.get(`/get-order/:id`, async (req, res) => {
   try {
     let products = [];
-    const order = await Orders.find({ userId: req.params.id }).sort({ createdAt: -1 });
+    const order = await Orders.find({ userId: req.params.id }).sort({
+      createdAt: -1,
+    });
 
     for (let i = 0; i < order.length; i++) {
       let tempProducts = [];
@@ -76,7 +78,7 @@ router.get(`/get-order/:id`, async (req, res) => {
             isReviewed: order[i].isReviewed,
           };
         });
-       
+
         let menuItems = await Promise.all(menuPromises);
         tempProducts = [...tempProducts, ...menuItems];
       }
@@ -87,7 +89,6 @@ router.get(`/get-order/:id`, async (req, res) => {
     res.status(500).json(err);
   }
 });
-
 
 router.get(`/get-resturant-order/:id`, async (req, res) => {
   let products = [];
@@ -474,7 +475,7 @@ router.get(`/location-based-delivery/:address`, async (req, res) => {
     for (let i = 0; i < order.length; i++) {
       const address = await shipping.findOne({ _id: order[i].address_id });
 
-      let tempProducts = []; 
+      let tempProducts = [];
 
       const length = order[i].products.length;
 
@@ -484,7 +485,6 @@ router.get(`/location-based-delivery/:address`, async (req, res) => {
         menus.map((item) => {
           const stringIds = restaurantIds.map((id) => id.toString());
           if (stringIds.indexOf(item.restaurantId) > -1) {
-            
             tempProducts.push({
               _id: item._id,
               foodname: item.foodname,
@@ -500,8 +500,10 @@ router.get(`/location-based-delivery/:address`, async (req, res) => {
         });
       }
       if (tempProducts.length > 0) {
-        
-        products.push([...tempProducts, { orderId: order[i]._id, address: address }]);
+        products.push([
+          ...tempProducts,
+          { orderId: order[i]._id, address: address },
+        ]);
       }
     }
 
@@ -535,7 +537,6 @@ router.get(`/accepted-orders-by-deliveryboy/:id`, async (req, res) => {
         menus.map((item) => {
           const stringIds = restaurantIds.map((id) => id.toString());
           if (stringIds.indexOf(item.restaurantId) > -1) {
-            tempProducts.push({ orderId: order[i]._id });
             tempProducts.push({
               _id: item._id,
               foodname: item.foodname,
@@ -544,14 +545,18 @@ router.get(`/accepted-orders-by-deliveryboy/:id`, async (req, res) => {
               category: item.category,
               isDeleted: item.isDeleted,
               restaurantId: item.restaurantId,
+              orderId: order[i]._id,
               quantity: order[i].products[j].quantity,
             });
-            tempProducts.push({ orderId: order[i]._id, address: address });
           }
         });
-       
       }
-      if (tempProducts.length > 0) products.push(tempProducts);
+      if (tempProducts.length > 0) {
+        products.push([
+          ...tempProducts,
+          { orderId: order[i]._id, address: address },
+        ]);
+      }
     }
 
     res.status(200).json(products);
@@ -598,11 +603,15 @@ router.get(`/orders-history-for-deliveryboy/:id`, async (req, res) => {
               restaurantId: item.restaurantId,
               quantity: order[i].products[j].quantity,
             });
-            tempProducts.push({ orderId: order[i]._id, address: address });
           }
         });
       }
-      if (tempProducts.length > 0) products.push(tempProducts);
+      if (tempProducts.length > 0) {
+        products.push([
+          ...tempProducts,
+          { orderId: order[i]._id, address: address },
+        ]);
+      }
     }
 
     res.status(200).json(products);
@@ -611,4 +620,47 @@ router.get(`/orders-history-for-deliveryboy/:id`, async (req, res) => {
     console.log(err);
   }
 });
+router.get("/deliveryboy-wages/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { startDate, endDate } = req.query;
+
+    let deliveredOrdersQuery = {
+      deliveryBoyId: id,
+      isDelivered: true
+    };
+
+    if (startDate && endDate) {
+      deliveredOrdersQuery.updatedAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+
+    const deliveredOrders = await Orders.countDocuments(deliveredOrdersQuery);
+
+    const wagePerOrder = 50;
+
+    let dailyWage = 0;
+
+    if (deliveredOrders > 0) {
+      dailyWage = wagePerOrder;
+    }
+
+    const daysInWeek = 7;
+
+    const weeklyWage = dailyWage * daysInWeek;
+    const daysInMonth = 30;
+
+    const monthlyWage = dailyWage * daysInMonth;
+    res
+      .status(200)
+      .json({ deliveredOrders, dailyWage, weeklyWage, monthlyWage });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+
 module.exports = router;

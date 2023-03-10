@@ -18,6 +18,10 @@ const inspectionSchema = mongoose.Schema(
       type: Boolean,
       default: 0,
     },
+    isReportDone:{
+      type: Boolean,
+      default: 0,
+    },
     inspectorName:{
       type: String,
     },
