@@ -10,6 +10,11 @@ router.post("/schedule-inspection", async (req, res) => {
     scheduledDate: req.body.scheduledDate,
     isReportDone: false,
   });
+  await Restaurant.findByIdAndUpdate(
+    req.body.restaurantId,
+    { isScheduledForInspection: true },
+    { new: true }
+  );
   newInspection
     .save()
     .then(() => res.send("Inspection scheduled!"))
@@ -58,7 +63,11 @@ router.put(`/update-inspection/:id`, async (req, res) => {
     if (!inspection) {
       return res.status(404).send("Inspection not found");
     }
-
+    await Restaurant.findByIdAndUpdate(
+      inspection.restaurantId,
+      { isScheduledForInspection: false },
+      { new: true }
+    );
     inspection.isDone = req.body.isDone;
     await inspection.save();
 

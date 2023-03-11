@@ -61,6 +61,9 @@ const restaurantSchema = mongoose.Schema({
     type:Number,
     default:1,
   },
+  isScheduledForInspection:{
+    type:Boolean,
+  }
 });
 
 restaurantSchema.index({ address: "text" });

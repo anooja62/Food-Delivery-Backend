@@ -105,12 +105,28 @@ router.get("/hygiene-prediction", async (req, res) => {
     const feedbackData = await FeedBack.find();
     const checklistData = await Checklist.find();
 
+    const restaurantFeedbackCounts = {};
+
+    // Count feedback entries per restaurant
+    feedbackData.forEach((feedback) => {
+      const restaurantId = feedback.restaurantId;
+      if (restaurantFeedbackCounts[restaurantId]) {
+        restaurantFeedbackCounts[restaurantId]++;
+      } else {
+        restaurantFeedbackCounts[restaurantId] = 1;
+      }
+    });
+
     const processedRestaurants = new Set();
     const restaurantData = [];
 
+    
     for (const feedback of feedbackData) {
       const restaurantId = feedback.restaurantId;
-      if (processedRestaurants.has(restaurantId)) {
+      if (
+        processedRestaurants.has(restaurantId) ||
+        restaurantFeedbackCounts[restaurantId] < 3
+      ) {
         continue;
       }
 
@@ -174,6 +190,7 @@ router.get("/hygiene-prediction", async (req, res) => {
     res.status(500).json({ message: "Error fetching restaurant data" });
   }
 });
+
 router.get("/hygienereport/:id", async (req, res) => {
   try {
     const feedback = await FeedBack.find({ restaurantId: req.params.id });
