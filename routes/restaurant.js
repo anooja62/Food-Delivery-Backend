@@ -6,7 +6,6 @@ const bcrypt = require("bcrypt");
 
 router.post("/add-restaurent", async (req, res) => {
   try {
-    //create new restaurant
     const newRestaurent = new restaurant({
       name: req.body.name,
       phone: req.body.phone,
@@ -28,7 +27,7 @@ router.post("/add-restaurent", async (req, res) => {
     console.log(err);
   }
 });
-//restaurant login
+
 router.post("/rest-login", async (req, res) => {
   try {
     const rest = await restaurant.findOne({ email: req.body.email });
@@ -55,7 +54,7 @@ router.put("/restaurent-pw-update", async (req, res) => {
     console.log(req.body);
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    // update pwd restaurant
+
     const rest = await restaurant.findOne({ email: req.body.email });
     const id = rest._id;
 
@@ -70,11 +69,8 @@ router.put("/restaurent-pw-update", async (req, res) => {
   }
 });
 
-//UPDATE restaurant
-
 router.put("/update-res/:id", async (req, res) => {
   try {
-    //generate new password
     let hashedPassword;
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
@@ -94,8 +90,6 @@ router.put("/update-res/:id", async (req, res) => {
       restImg: req.body.restImg,
     });
 
-    //save user return response
-
     res.status(201).json("updated");
   } catch (err) {
     res.status(500).json(err);
@@ -103,7 +97,6 @@ router.put("/update-res/:id", async (req, res) => {
   }
 });
 
-//get resturant details
 router.get(`/res-details/:id`, async (req, res) => {
   try {
     const allRestaurent = await restaurant.find({
@@ -176,89 +169,88 @@ router.put("/reject/:id", async (req, res) => {
     return res.status(500).json(err);
   }
 });
-router.get(`/search/:address`, async (req, res) => {
+router.get('/search/:address', async (req, res) => {
   try {
-    const allRestaurent = await restaurant.find({
+    const allRestaurants = await restaurant.find({
       $text: { $search: req.params.address },
-    });
-    res.status(200).json(allRestaurent);
+    }).sort({ sentimentScore: -1 }); // sort by descending order of sentimentScore
+    res.status(200).json(allRestaurants);
   } catch (err) {
-    res.status(500).json(err);
-    console.log(err);
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
-router.put('/restaurants/:id/sentiment-score', async (req, res) => {
+
+router.put("/restaurants/:id/sentiment-score", async (req, res) => {
   try {
-   
     const restaurants = await restaurant.findById(req.params.id);
 
     if (!restaurants) {
-      return res.status(404).json({ message: 'Restaurant not found' });
+      return res.status(404).json({ message: "Restaurant not found" });
     }
 
-    
     restaurants.sentimentScore = req.body.sentimentScore;
 
-    
     const updatedRestaurant = await restaurants.save();
 
-   
     res.json(updatedRestaurant);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 });
-router.get('/restaurants/:id/sentiment-score', async (req, res) => {
+router.get("/restaurants/:id/sentiment-score", async (req, res) => {
   try {
-    const restaurants = await restaurant.findById(req.params.id, 'sentimentScore');
+    const restaurants = await restaurant.findById(
+      req.params.id,
+      "sentimentScore"
+    );
 
     if (!restaurants) {
-      return res.status(404).json({ message: 'Restaurant not found' });
+      return res.status(404).json({ message: "Restaurant not found" });
     }
 
     res.json({ sentimentScore: restaurants.sentimentScore });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-router.get('/sentiment-score-average', async (req, res) => {
+router.get("/sentiment-score-average", async (req, res) => {
   try {
-    const restaurants = await restaurant.find({}, 'sentimentScore');
-    
+    const restaurants = await restaurant.find({}, "sentimentScore");
+
     if (restaurants.length === 0) {
-      return res.status(404).json({ message: 'No restaurants found' });
+      return res.status(404).json({ message: "No restaurants found" });
     }
 
-    const sentimentScores = restaurants.map(rest => rest.sentimentScore);
-  
+    const sentimentScores = restaurants.map((rest) => rest.sentimentScore);
+
     const sum = sentimentScores.reduce((acc, cur) => acc + cur, 0);
-   
+
     const average = sum / sentimentScores.length;
 
     res.json({ averageSentimentScore: average });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-router.get('/top-restaurants', async (req, res) => {
+router.get("/top-restaurants", async (req, res) => {
   try {
-    const topRestaurants = await restaurant.find({}, 'name sentimentScore')
+    const topRestaurants = await restaurant
+      .find({}, "name sentimentScore")
       .sort({ sentimentScore: -1 })
       .limit(4);
 
     res.json(topRestaurants);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 });
-
-
 
 module.exports = router;
