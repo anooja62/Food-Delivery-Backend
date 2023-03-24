@@ -620,46 +620,7 @@ router.get(`/orders-history-for-deliveryboy/:id`, async (req, res) => {
     console.log(err);
   }
 });
-router.get("/deliveryboy-wages/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { startDate, endDate } = req.query;
 
-    let deliveredOrdersQuery = {
-      deliveryBoyId: id,
-      isDelivered: true
-    };
-
-    if (startDate && endDate) {
-      deliveredOrdersQuery.updatedAt = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate)
-      };
-    }
-
-    const deliveredOrders = await Orders.countDocuments(deliveredOrdersQuery);
-
-    const wagePerOrder = 50;
-
-    let dailyWage = 0;
-
-    if (deliveredOrders > 0) {
-      dailyWage = wagePerOrder;
-    }
-
-    const daysInWeek = 7;
-
-    const weeklyWage = dailyWage * daysInWeek;
-    const daysInMonth = 30;
-
-    const monthlyWage = dailyWage * daysInMonth;
-    res
-      .status(200)
-      .json({ deliveredOrders, dailyWage, weeklyWage, monthlyWage });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
 
 
 

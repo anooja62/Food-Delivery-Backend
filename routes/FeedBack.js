@@ -107,7 +107,7 @@ router.get("/hygiene-prediction", async (req, res) => {
 
     const restaurantFeedbackCounts = {};
 
-    // Count feedback entries per restaurant
+    
     feedbackData.forEach((feedback) => {
       const restaurantId = feedback.restaurantId;
       if (restaurantFeedbackCounts[restaurantId]) {

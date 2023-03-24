@@ -5,7 +5,7 @@ const Orders = require("../model/ordersmodel");
 const restaurant = require("../model/restaurantmodel");
 const salary = require("../model/restaurantsalarymodel");
 const menu = require("../model/menumodel");
-
+const deliveryBoy = require("../model/deliverymodel");
 router.put(`/pay-salary/:id`, async (req, res) => {
   try {
     const orders = await Orders.find({ orderReady: 1 });
@@ -64,29 +64,28 @@ router.put(`/pay-salary/:id`, async (req, res) => {
 
     await salaryDoc.save();
 
-    res.status(200).json({  totalOrderAmount, restaurantSalary });
+    res.status(200).json({ totalOrderAmount, restaurantSalary });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-
-router.get('/monthly-salary/:id', async (req, res) => {
+router.get("/monthly-salary/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
     const startDate = new Date();
-    startDate.setMonth(startDate.getMonth() - 5); 
-    startDate.setDate(1); 
+    startDate.setMonth(startDate.getMonth() - 5);
+    startDate.setDate(1);
 
     const salaryData = [];
     let totalSalary = 0;
 
     for (let i = 0; i < 6; i++) {
       const endDate = new Date(startDate);
-      endDate.setMonth(startDate.getMonth() + 1); 
-      endDate.setDate(0); 
+      endDate.setMonth(startDate.getMonth() + 1);
+      endDate.setDate(0);
 
       const orders = await Orders.find({
         orderReady: 1,
@@ -148,14 +147,69 @@ router.get('/monthly-salary/:id', async (req, res) => {
         salary: restaurantSalary,
       });
 
-      startDate.setMonth(startDate.getMonth() + 1); 
+      startDate.setMonth(startDate.getMonth() + 1);
     }
 
     res.status(200).json({ salaryData, totalSalary });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
+router.get("/delivery-salary/:id", async (req, res) => {
+  try {
+    const deliveryBoyId = req.params.id;
+    const currentDate = new Date();
+    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59, 999);
+const TotalOrderCount = await Orders.countDocuments({
+  deliveryBoyId,
+      isDelivered: 1,
+    });
+    const orderCount = await Orders.countDocuments({
+      deliveryBoyId,
+      isDelivered: 1,
+      updatedAt: { $gte: startOfMonth, $lte: endOfMonth },
+    });
+
+    const orders = await Orders.find({
+      deliveryBoyId,
+      isDelivered: 1,
+      updatedAt: { $gte: startOfMonth, $lte: endOfMonth },
+    }).sort({ updatedAt: -1 });
+
+    let orderAmount = 0;
+
+    for (let i = 0; i < orders.length; i++) {
+      const order = orders[i];
+      const products = order.products;
+      let subTotal = 0;
+      for (let j = 0; j < products.length; j++) {
+        const product = products[j];
+        const menus = await menu.findById(product.ProductId);
+        subTotal += menus.price * product.quantity;
+      }
+      orderAmount += subTotal;
+    }
+
+    const salary = orderAmount * 0.4;
+    const monthName = startOfMonth.toLocaleString("default", { month: "long" });
+
+    res.status(200).json([{
+      deliveryBoyId,
+      month: monthName,
+      totalOrdersDelivered: orderCount,
+      totalOrderAmount: orderAmount,
+      salary,
+      TotalOrderCount,
+    }]);
+    
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
+});
+
+
 
 module.exports = router;
