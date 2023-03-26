@@ -25,7 +25,11 @@ router.post("/register", async (req, res) => {
 
     if (!userEmail) {
       const users = await newUser.save();
-
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
       res.status(201).json(users);
     }
   } catch (err) {
@@ -53,6 +57,11 @@ router.post("/login", async (req, res) => {
       !validPassword && res.status(400).json("wrong password");
       if (validPassword) {
         const { password, ...others } = users._doc;
+        res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
         res.status(200).json(others);
       }
     }
@@ -80,7 +89,11 @@ router.put("/update/:id", async (req, res) => {
     });
 
     //save user return response
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(201).json("updated");
   } catch (err) {
     res.status(500).json(err);
@@ -93,7 +106,11 @@ router.get("/all-user", async (req, res) => {
     const allUser = await user.find({
       isBlocked: 0,
     });
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(allUser);
   } catch (err) {
     res.status(500).json(err);
@@ -108,6 +125,11 @@ router.put("/block/:id", async (req, res) => {
     const allUser = await user.find({
       isBlocked: 0,
     });
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(allUser);
   } catch (err) {
     return res.status(500).json(err);
@@ -225,7 +247,11 @@ router.get("/total-registered-users-per-month", async (req, res) => {
       year: year,
       count: user.count,
     }));
-   
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
 
     res.status(200).json({ users: usersWithMonthName });
   } catch (error) {

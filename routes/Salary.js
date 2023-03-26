@@ -160,56 +160,66 @@ router.get("/delivery-salary/:id", async (req, res) => {
   try {
     const deliveryBoyId = req.params.id;
     const currentDate = new Date();
-    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59, 999);
-const TotalOrderCount = await Orders.countDocuments({
-  deliveryBoyId,
-      isDelivered: 1,
-    });
-    const orderCount = await Orders.countDocuments({
-      deliveryBoyId,
-      isDelivered: 1,
-      updatedAt: { $gte: startOfMonth, $lte: endOfMonth },
-    });
 
-    const orders = await Orders.find({
-      deliveryBoyId,
-      isDelivered: 1,
-      updatedAt: { $gte: startOfMonth, $lte: endOfMonth },
-    }).sort({ updatedAt: -1 });
+    const salaryData = [];
 
-    let orderAmount = 0;
+    for (let i = 0; i < 5; i++) {
+      const month = currentDate.getMonth() - i;
+      const year = currentDate.getFullYear();
+      const startOfMonth = new Date(year, month, 1);
+      const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59, 999);
 
-    for (let i = 0; i < orders.length; i++) {
-      const order = orders[i];
-      const products = order.products;
-      let subTotal = 0;
-      for (let j = 0; j < products.length; j++) {
-        const product = products[j];
-        const menus = await menu.findById(product.ProductId);
-        subTotal += menus.price * product.quantity;
+      const TotalOrderCount = await Orders.countDocuments({
+        deliveryBoyId,
+        isDelivered: 1,
+      });
+      const orderCount = await Orders.countDocuments({
+        deliveryBoyId,
+        isDelivered: 1,
+        updatedAt: { $gte: startOfMonth, $lte: endOfMonth },
+      });
+
+      const orders = await Orders.find({
+        deliveryBoyId,
+        isDelivered: 1,
+        updatedAt: { $gte: startOfMonth, $lte: endOfMonth },
+      }).sort({ updatedAt: -1 });
+
+      let orderAmount = 0;
+
+      for (let j = 0; j < orders.length; j++) {
+        const order = orders[j];
+        const products = order.products;
+        let subTotal = 0;
+        for (let k = 0; k < products.length; k++) {
+          const product = products[k];
+          const menus = await menu.findById(product.ProductId);
+          subTotal += menus.price * product.quantity;
+        }
+        orderAmount += subTotal;
       }
-      orderAmount += subTotal;
+
+      const salary = orderAmount * 0.4;
+      const monthName = startOfMonth.toLocaleString("default", { month: "long" });
+      const yearOfMonth = startOfMonth.getFullYear();
+
+      salaryData.push({
+        deliveryBoyId,
+        month: monthName,
+        year:yearOfMonth,
+        totalOrdersDelivered: orderCount,
+        totalOrderAmount: orderAmount,
+        salary,
+        TotalOrderCount,
+      });
     }
 
-    const salary = orderAmount * 0.4;
-    const monthName = startOfMonth.toLocaleString("default", { month: "long" });
-
-    res.status(200).json([{
-      deliveryBoyId,
-      month: monthName,
-      totalOrdersDelivered: orderCount,
-      totalOrderAmount: orderAmount,
-      salary,
-      TotalOrderCount,
-    }]);
-    
+    res.status(200).json(salaryData);
   } catch (err) {
     res.status(500).json(err);
     console.log(err);
   }
 });
-
 
 
 module.exports = router;

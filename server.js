@@ -24,7 +24,14 @@ const port = 9000;
 dotenv.config();
 
 app.use(express.json());
-app.use(Cors());
+app.use(
+  Cors({
+    origin: [
+      "https://localhost:3000",
+      "https://deliorder.onrender.com",
+    ],
+  })
+);
 
 const MONGO_URI =
   "mongodb+srv://admin:Uous7v8k5FVxNu9x@cluster0.fyfxtkt.mongodb.net/?retryWrites=true&w=majority";
@@ -36,7 +43,14 @@ mongoose
   .then(() => console.log("connected  to mongodb !!"))
 
   .catch((err) => console.log(err.message));
-
+  app.get("/", async (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    res.send("API is running");
+  });
 app.use("/auth", authRoutes);
 app.use("/rest", restaurantRoutes);
 app.use("/deli", deliveryRoutes);
