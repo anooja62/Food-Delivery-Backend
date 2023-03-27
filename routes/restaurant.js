@@ -35,11 +35,7 @@ router.post("/add-restaurent", async (req, res) => {
 router.post("/rest-login", async (req, res) => {
  
   try {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+ 
     const rest = await restaurant.findOne({ email: req.body.email });
 
     if (!rest) {
@@ -53,7 +49,11 @@ router.post("/rest-login", async (req, res) => {
     }
 
     const { password, ...others } = rest._doc;
-   
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(others); 
 
   } catch (err) {
