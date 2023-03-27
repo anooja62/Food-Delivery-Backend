@@ -48,16 +48,17 @@ router.post("/rest-login", async (req, res) => {
         req.body.password,
         rest.password
       );
-      !validPassword && res.status(400).json("wrong password");
+      !validPassword && res.status(400).json("Wrong password");
       if (validPassword) {
         const { password, ...others } = rest._doc;
-        res.status(200).json(others);
+        res.status(200).json(others); // send success response
       }
     }
   } catch (err) {
     res.status(500).send({ message: err });
   }
 });
+
 
 
 router.put("/restaurent-pw-update", async (req, res) => {
