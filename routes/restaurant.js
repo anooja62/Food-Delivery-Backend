@@ -33,11 +33,8 @@ router.post("/add-restaurent", async (req, res) => {
 });
 
 router.post("/rest-login", async (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
   try {
     const rest = await restaurant.findOne({ email: req.body.email });
@@ -51,13 +48,14 @@ router.post("/rest-login", async (req, res) => {
       !validPassword && res.status(400).json("Wrong password");
       if (validPassword) {
         const { password, ...others } = rest._doc;
-        res.status(200).json(others); // send success response
+        res.status(200).json(others); 
       }
     }
   } catch (err) {
     res.status(500).send({ message: err });
   }
 });
+
 
 
 
