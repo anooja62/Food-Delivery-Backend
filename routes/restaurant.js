@@ -33,6 +33,12 @@ router.post("/add-restaurent", async (req, res) => {
 });
 
 router.post("/rest-login", async (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+
   try {
     const rest = await restaurant.findOne({ email: req.body.email });
     !rest && res.status(404).json("User not found");
@@ -51,12 +57,8 @@ router.post("/rest-login", async (req, res) => {
   } catch (err) {
     res.status(500).send({ message: err });
   }
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
 });
+
 
 router.put("/restaurent-pw-update", async (req, res) => {
   try {
