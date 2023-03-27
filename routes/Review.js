@@ -1,25 +1,26 @@
+/** @format */
+
 const router = require("express").Router();
 const foodreview = require("../model/reviewmodel");
 
-
 router.post("/review", async (req, res) => {
   try {
-   
-    //create new  review
     const newFoodreview = new foodreview({
       name: req.body.name,
-      description:req.body.description,
-      restaurantId:req.body.restaurantId
-      
-      
+      description: req.body.description,
+      restaurantId: req.body.restaurantId,
     });
 
-    //save user return response
-
     const foodreviews = await newFoodreview.save();
-    const allFoodreview = await foodreview.find({  restaurantId:req.body.restaurantId,
-      isApproved:0
-    })
+    const allFoodreview = await foodreview.find({
+      restaurantId: req.body.restaurantId,
+      isApproved: 0,
+    });
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(201).json(allFoodreview);
   } catch (err) {
     res.status(500).json(err);
@@ -27,24 +28,22 @@ router.post("/review", async (req, res) => {
   }
 });
 
-
-
-router.get(`/all-foodreview/:id`,  async (req,res)=>{
+router.get(`/all-foodreview/:id`, async (req, res) => {
   try {
-  const allFoodreview = await foodreview.find({restaurantId:req.params.id,
-    isApproved:0
-  })
- 
-  res.status(200).json(allFoodreview);
-  } catch(err) {
-      res.status(500).json(err);
-      console.log(err);
+    const allFoodreview = await foodreview.find({
+      restaurantId: req.params.id,
+      isApproved: 0,
+    });
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    res.status(200).json(allFoodreview);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
   }
 });
-
-
-
-
-
 
 module.exports = router;

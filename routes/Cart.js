@@ -26,6 +26,11 @@ router.post("/add-cart", async (req, res) => {
         });
       });
     }
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(products);
   } else {
     const newCart = new Cart(req.body);
@@ -49,6 +54,11 @@ router.post("/add-cart", async (req, res) => {
           });
         });
       }
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
       res.status(200).json(products);
     } catch (err) {
       res.status(500).json(err);
@@ -66,6 +76,11 @@ router.put("/:id", async (req, res) => {
       },
       { new: true }
     );
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(updatedCart);
   } catch (err) {
     res.status(500).json(err);
@@ -76,6 +91,11 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     await Cart.findByIdAndDelete(req.params.id);
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json("Cart has  been deleted");
   } catch (err) {
     res.status(500).json(err);
@@ -85,7 +105,11 @@ router.delete("/:id", async (req, res) => {
 router.get("/find/:id", async (req, res) => {
   try {
     const cart = await Cart.findOne({ userId: req.params.id });
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(cart);
   } catch (err) {
     res.status(500).json(err);
@@ -96,6 +120,11 @@ router.get("/allCart", async (req, res) => {
   try {
     const carts = await Cart.find();
     res.status(200).json(carts);
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
   } catch (err) {
     req.status(500).json(err);
   }
@@ -122,7 +151,11 @@ router.get(`/get-cart/:id`, async (req, res) => {
         });
       });
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json(err);

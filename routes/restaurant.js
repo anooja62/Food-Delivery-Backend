@@ -19,7 +19,11 @@ router.post("/add-restaurent", async (req, res) => {
 
     if (!restEmail) {
       const rest = await newRestaurent.save();
-
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
       res.status(201).json(rest);
     }
   } catch (err) {
@@ -47,6 +51,11 @@ router.post("/rest-login", async (req, res) => {
   } catch (err) {
     res.status(500).send({ message: err });
   }
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
 });
 
 router.put("/restaurent-pw-update", async (req, res) => {
@@ -62,6 +71,11 @@ router.put("/restaurent-pw-update", async (req, res) => {
       password: hashedPassword,
       isApproved: 1,
     });
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(201).json("Accepted");
   } catch (err) {
     res.status(500).json(err);
@@ -89,7 +103,11 @@ router.put("/update-res/:id", async (req, res) => {
       ownerphone: req.body.ownerphone,
       restImg: req.body.restImg,
     });
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(201).json("updated");
   } catch (err) {
     res.status(500).json(err);
@@ -103,7 +121,11 @@ router.get(`/res-details/:id`, async (req, res) => {
       restaurantId: req.params.id,
       isRejected: 0,
     });
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(allRestaurent);
   } catch (err) {
     res.status(500).json(err);
@@ -116,7 +138,11 @@ router.get(`/single-rest/:id`, async (req, res) => {
       _id: req.params.id,
       isRejected: 0,
     });
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(singleRestaurent);
   } catch (err) {
     res.status(500).json(err);
@@ -129,7 +155,11 @@ router.get("/all-restaurent", async (req, res) => {
     const allRestaurent = await restaurant.find({
       isRejected: 0,
     });
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(allRestaurent);
   } catch (err) {
     res.status(500).json(err);
@@ -148,7 +178,11 @@ router.get("/parsed-restaurent", async (req, res) => {
     allRestaurent.map((item) =>
       tempArr.push({ label: item.name, value: item._id, address: item.address })
     );
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(tempArr);
   } catch (err) {
     res.status(500).json(err);
@@ -164,6 +198,11 @@ router.put("/reject/:id", async (req, res) => {
     const allRestaurent = await restaurant.find({
       isRejected: 0,
     });
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(allRestaurent);
   } catch (err) {
     return res.status(500).json(err);
@@ -173,7 +212,12 @@ router.get('/search/:address', async (req, res) => {
   try {
     const allRestaurants = await restaurant.find({
       $text: { $search: req.params.address },
-    }).sort({ sentimentScore: -1 }); // sort by descending order of sentimentScore
+    }).sort({ sentimentScore: -1 }); 
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(allRestaurants);
   } catch (err) {
     console.error(err);
@@ -193,7 +237,11 @@ router.put("/restaurants/:id/sentiment-score", async (req, res) => {
     restaurants.sentimentScore = req.body.sentimentScore;
 
     const updatedRestaurant = await restaurants.save();
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.json(updatedRestaurant);
   } catch (err) {
     console.error(err);
@@ -210,7 +258,11 @@ router.get("/restaurants/:id/sentiment-score", async (req, res) => {
     if (!restaurants) {
       return res.status(404).json({ message: "Restaurant not found" });
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.json({ sentimentScore: restaurants.sentimentScore });
   } catch (err) {
     console.error(err);
@@ -231,7 +283,11 @@ router.get("/sentiment-score-average", async (req, res) => {
     const sum = sentimentScores.reduce((acc, cur) => acc + cur, 0);
 
     const average = sum / sentimentScores.length;
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.json({ averageSentimentScore: average });
   } catch (err) {
     console.error(err);
@@ -245,7 +301,11 @@ router.get("/top-restaurants", async (req, res) => {
       .find({}, "name sentimentScore")
       .sort({ sentimentScore: -1 })
       .limit(4);
-
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
     res.json(topRestaurants);
   } catch (err) {
     console.error(err);

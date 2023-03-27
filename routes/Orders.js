@@ -33,7 +33,11 @@ router.post("/add-order/:id", async (req, res) => {
       orderDate: new Date(),
     });
     const savedOrder = await newOrders.save();
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json("added");
   } catch (err) {
     res.status(500).json(err);
@@ -84,6 +88,11 @@ router.get(`/get-order/:id`, async (req, res) => {
       }
       products.push(tempProducts);
     }
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json(err);
@@ -130,7 +139,11 @@ router.get(`/get-resturant-order/:id`, async (req, res) => {
           products.push(filtered);
         }
       }
-
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
       res.status(200).json(products);
     } catch (err) {
       res.status(500).json(err);
@@ -180,7 +193,11 @@ router.get(`/resturant-order-history/:id`, async (req, res) => {
           products.push(filtered);
         }
       }
-
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
       res.status(200).json(products);
     } catch (err) {
       res.status(500).json(err);
@@ -233,7 +250,11 @@ router.put("/order-ready", async (req, res) => {
         products.push(filtered);
       }
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(products);
   } catch (err) {
     return res.status(500).json(err);
@@ -273,7 +294,11 @@ router.get(`/get-delivery-order/:id`, async (req, res) => {
 
       products.push(tempProducts);
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json(err);
@@ -317,7 +342,11 @@ router.put("/out-for-delivery", async (req, res) => {
 
       products.push(tempProducts);
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json(err);
@@ -367,7 +396,11 @@ router.put("/delivered", async (req, res) => {
 
       products.push(tempProducts);
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json(err);
@@ -417,7 +450,11 @@ router.get(`/delivered-order`, async (req, res) => {
 
       products.push(tempProducts);
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json(err);
@@ -453,7 +490,11 @@ router.get(`/most-popular-foods/:id`, async (req, res) => {
     if (sortedPopularFoods.length > 1) {
       mostPopularFood.push(sortedPopularFoods[1]);
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(mostPopularFood);
   } catch (err) {
     console.error(err);
@@ -506,7 +547,11 @@ router.get(`/location-based-delivery/:address`, async (req, res) => {
         ]);
       }
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json(err);
@@ -558,7 +603,11 @@ router.get(`/accepted-orders-by-deliveryboy/:id`, async (req, res) => {
         ]);
       }
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json(err);
@@ -613,7 +662,11 @@ router.get(`/orders-history-for-deliveryboy/:id`, async (req, res) => {
         ]);
       }
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json(err);

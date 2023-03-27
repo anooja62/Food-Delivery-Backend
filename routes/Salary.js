@@ -63,7 +63,11 @@ router.put(`/pay-salary/:id`, async (req, res) => {
     });
 
     await salaryDoc.save();
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json({ totalOrderAmount, restaurantSalary });
   } catch (err) {
     console.error(err);
@@ -149,7 +153,11 @@ router.get("/monthly-salary/:id", async (req, res) => {
 
       startDate.setMonth(startDate.getMonth() + 1);
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json({ salaryData, totalSalary });
   } catch (error) {
     console.error(error);
@@ -213,7 +221,11 @@ router.get("/delivery-salary/:id", async (req, res) => {
         TotalOrderCount,
       });
     }
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(salaryData);
   } catch (err) {
     res.status(500).json(err);

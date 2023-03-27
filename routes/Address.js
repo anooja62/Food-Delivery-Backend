@@ -20,7 +20,11 @@ router.post("/address", async (req, res) => {
       userId: req.body.userId,
       isDeleted: 0,
     });
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(201).json(allShipping);
   } catch (err) {
     res.status(500).json(err);
@@ -34,7 +38,11 @@ router.get(`/all-addresses/:id`, async (req, res) => {
       userId: req.params.id,
       isDeleted: 0,
     });
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(allShipping);
   } catch (err) {
     res.status(500).json(err);
@@ -50,6 +58,11 @@ router.put("/delete/:id", async (req, res) => {
     const allShipping = await shipping.find({
       isDeleted: 0,
     });
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(allShipping);
   } catch (err) {
     return res.status(500).json(err);

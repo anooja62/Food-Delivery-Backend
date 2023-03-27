@@ -16,7 +16,11 @@ router.post("/add-combo", async (req, res) => {
     const allCombo = await combo.find({  restaurantId:req.body.restaurantId,
       isDeleted:0
     })
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(201).json(combos);
   } catch (err) {
     res.status(500).json(err);
@@ -29,7 +33,11 @@ router.get(`/all-combo/:id`, async (req, res) => {
     const allCombo = await combo.find({restaurantId:req.params.id,
       isDeleted: 0,
     });
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(allCombo);
   } catch (err) {
     res.status(500).json(err);
@@ -45,6 +53,11 @@ router.put("/delete/:id", async (req, res) => {
     const allCombo = await combo.find({
       isDeleted: 0,
     });
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(allCombo);
   } catch (err) {
     return res.status(500).json(err);

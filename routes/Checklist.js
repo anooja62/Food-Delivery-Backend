@@ -18,6 +18,11 @@ router.post('/forms', async (req, res) => {
     console.log(err);
     res.status(500).send('Error saving form data');
   }
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
 });
 
 const getAllRestaurants = async () => {
@@ -49,5 +54,10 @@ cron.schedule('0 0 * * 1', async () => {
       console.log('Email sent:', info.response);
     }
   }
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
 });
 module.exports = router;

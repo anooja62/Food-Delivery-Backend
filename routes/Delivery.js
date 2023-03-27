@@ -19,7 +19,11 @@ imgUrl:req.body.imgUrl,
 
     if (!userEmail) {
       const deliveryboys = await newDeliveryboy.save();
-
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
       res.status(201).json(deliveryboys);
     }
   } catch (err) {
@@ -42,6 +46,11 @@ router.put("/deliveryboy-pw-update", async (req, res) => {
       password: hashedPassword,
       isApproved: 1,
     });
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(201).json(psw);
   } catch (err) {
     res.status(500).json(err);
@@ -69,6 +78,11 @@ router.post("/delivery-login", async (req, res) => {
   } catch (err) {
     res.status(500).send({ message: err });
   }
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
 });
 //deliveryboy update
 router.put("/update-delivery/:id", async (req, res) => {
@@ -90,7 +104,11 @@ router.put("/update-delivery/:id", async (req, res) => {
     });
 
     //save user return response
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(201).json("updated");
   } catch (err) {
     res.status(500).json(err);
@@ -103,7 +121,11 @@ router.get("/all-deliveryboy", async (req, res) => {
     const allDeliveryboy = await deliveryboy.find({
       isRejected: 0,
     });
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(allDeliveryboy);
   } catch (err) {
     res.status(500).json(err);
@@ -119,6 +141,11 @@ router.put("/reject/:id", async (req, res) => {
     const allDeliveryboy = await deliveryboy.find({
       isRejected: 0,
     });
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.status(200).json(allDeliveryboy);
   } catch (err) {
     return res.status(500).json(err);

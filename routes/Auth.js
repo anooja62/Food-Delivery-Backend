@@ -160,8 +160,8 @@ router.put("/send-otp", async (req, res) => {
   });
   let info = await transporter.sendMail({
     from: "deliorderfoods@gmail.com",
-    to: req.body.email, // list of receivers
-    subject: "Reset your password", // Subject line
+    to: req.body.email, 
+    subject: "Reset your password", 
     text: String(_otp),
   });
   if (info.messageId) {
@@ -176,6 +176,11 @@ router.put("/send-otp", async (req, res) => {
   } else {
     res.send({ code: 500, message: "Server err" });
   }
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
 });
 
 //submit otp
@@ -201,6 +206,11 @@ router.put("/submit-otp", async (req, res) => {
     .catch((err) => {
       res.send({ code: 500, message: "otp is wrong" });
     });
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
 });
 
 const months = [
