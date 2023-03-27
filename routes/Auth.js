@@ -5,7 +5,7 @@ const user = require("../model/usermodel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const tf = require("@tensorflow/tfjs");
-const FeedBack = require("../model/feedbackmodel")
+const FeedBack = require("../model/feedbackmodel");
 router.post("/register", async (req, res) => {
   try {
     //generate new password
@@ -58,10 +58,10 @@ router.post("/login", async (req, res) => {
       if (validPassword) {
         const { password, ...others } = users._doc;
         res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+        res.header(
+          "Access-Control-Allow-Headers",
+          "Origin, X-Requested-With, Content-Type, Accept"
+        );
         res.status(200).json(others);
       }
     }
@@ -160,8 +160,8 @@ router.put("/send-otp", async (req, res) => {
   });
   let info = await transporter.sendMail({
     from: "deliorderfoods@gmail.com",
-    to: req.body.email, 
-    subject: "Reset your password", 
+    to: req.body.email,
+    subject: "Reset your password",
     text: String(_otp),
   });
   if (info.messageId) {
@@ -206,11 +206,11 @@ router.put("/submit-otp", async (req, res) => {
     .catch((err) => {
       res.send({ code: 500, message: "otp is wrong" });
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
 });
 
 const months = [
@@ -236,8 +236,8 @@ router.get("/total-registered-users-per-month", async (req, res) => {
     const users = await user.aggregate([
       {
         $match: {
-          createdAt: { $gte: start, $lt: end }
-        }
+          createdAt: { $gte: start, $lt: end },
+        },
       },
       {
         $group: {
@@ -269,7 +269,5 @@ router.get("/total-registered-users-per-month", async (req, res) => {
     console.error(error);
   }
 });
-
-
 
 module.exports = router;
