@@ -33,10 +33,13 @@ router.post("/add-restaurent", async (req, res) => {
 });
 
 router.post("/rest-login", async (req, res) => {
-  res.set("Access-Control-Allow-Origin", "*");
-  res.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
+ 
   try {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     const rest = await restaurant.findOne({ email: req.body.email });
 
     if (!rest) {
@@ -50,7 +53,7 @@ router.post("/rest-login", async (req, res) => {
     }
 
     const { password, ...others } = rest._doc;
-
+   
     res.status(200).json(others); 
 
   } catch (err) {
