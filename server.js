@@ -30,7 +30,8 @@ app.use(
       "https://localhost:3000",
       "https://deliorder.onrender.com"
     ],
-    credentials: true
+    credentials: true,
+    optionsSuccessStatus: 200
   })
 );
 
