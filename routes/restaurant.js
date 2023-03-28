@@ -33,8 +33,6 @@ router.post("/add-restaurent", async (req, res) => {
 });
 
 router.post("/rest-login", async (req, res) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
-  res.header("Access-Control-Allow-Credentials", true); // enable cookies
   try {
     const rest = await restaurant.findOne({ email: req.body.email });
 
@@ -53,13 +51,15 @@ router.post("/rest-login", async (req, res) => {
 
     const { password, ...others } = rest._doc;
 
-   
+    res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
+    res.setHeader("Access-Control-Allow-Credentials", true); // enable cookies
     res.status(200).json(others);
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 
 router.put("/restaurent-pw-update", async (req, res) => {
