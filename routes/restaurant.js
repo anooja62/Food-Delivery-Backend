@@ -40,7 +40,10 @@ router.post("/rest-login", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const validPassword = await bcrypt.compare(req.body.password, rest.password);
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      rest.password
+    );
 
     if (!validPassword) {
       return res.status(400).json({ message: "Wrong password" });
@@ -50,17 +53,12 @@ router.post("/rest-login", async (req, res) => {
 
     res.header("Access-Control-Allow-Origin", req.headers.origin);
     res.header("Access-Control-Allow-Credentials", true); // enable cookies
-    res.status(200).json(others); 
-
+    res.status(200).json(others);
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
-
-
-
 
 
 router.put("/restaurent-pw-update", async (req, res) => {
@@ -213,11 +211,13 @@ router.put("/reject/:id", async (req, res) => {
     return res.status(500).json(err);
   }
 });
-router.get('/search/:address', async (req, res) => {
+router.get("/search/:address", async (req, res) => {
   try {
-    const allRestaurants = await restaurant.find({
-      $text: { $search: req.params.address },
-    }).sort({ sentimentScore: -1 }); 
+    const allRestaurants = await restaurant
+      .find({
+        $text: { $search: req.params.address },
+      })
+      .sort({ sentimentScore: -1 });
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
       "Access-Control-Allow-Headers",
@@ -226,10 +226,9 @@ router.get('/search/:address', async (req, res) => {
     res.status(200).json(allRestaurants);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
-
 
 router.put("/restaurants/:id/sentiment-score", async (req, res) => {
   try {
@@ -306,11 +305,11 @@ router.get("/top-restaurants", async (req, res) => {
       .find({}, "name sentimentScore")
       .sort({ sentimentScore: -1 })
       .limit(4);
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-      );
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
     res.json(topRestaurants);
   } catch (err) {
     console.error(err);
