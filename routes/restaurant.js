@@ -57,11 +57,18 @@ res.header(
     }
 
     const { password, ...others } = rest._doc;
-res.cookie("restaurantId", others._id, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantId", others._id, { httpOnly: true, secure: true, sameSite: "none" });
     res.cookie("restaurantName", others.name, { httpOnly: true, secure: true, sameSite: "none" });
-    console.log("Sending data to frontend: ", others);
-
+    res.cookie("restaurantEmail", others.email, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantPhone", others.phone, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantLicense", others.license, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantimgUrl", others.imgUrl, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantAbout", others.about, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantOwnername", others.ownername, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantOwnerphone", others.ownerphone, { httpOnly: true, secure: true, sameSite: "none" });
+    
     res.status(200).json(others);
+    
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal server error" });
