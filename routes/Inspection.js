@@ -52,11 +52,7 @@ router.get("/scheduled-restaurants", async (req, res) => {
       );
     })
     .catch((err) => console.log(err));
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+   
 });
 
 
@@ -81,11 +77,7 @@ router.put(`/update-inspection/:id`, async (req, res) => {
     console.log(err);
     res.status(500).send("Server error");
   }
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+
 });
 router.put(`/update-inspection-report/:id`, async (req, res) => {
   try {
@@ -108,11 +100,7 @@ router.put(`/update-inspection-report/:id`, async (req, res) => {
     console.log(err);
     res.status(500).send("Server error");
   }
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+  
 });
 
 router.get("/restaurants-inspection-report-view/:id", async (req, res) => {
@@ -130,11 +118,7 @@ router.get("/restaurants-inspection-report-view/:id", async (req, res) => {
     console.log(err);
     res.status(500).send("Server error");
   }
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+ 
 });
 
 module.exports = router;

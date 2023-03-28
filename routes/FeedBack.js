@@ -39,11 +39,7 @@ router.post("/feedback", async (req, res) => {
       { new: true }
     );
     console.log("order updated successfully");
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+  
     res.status(201).json({ message: "Feedback saved successfully" });
   } catch (error) {
     console.error(error);
@@ -102,11 +98,7 @@ router.post("/train", async (req, res) => {
   await model.fit(xs, ys, { epochs: 100 });
 
   res.send("ML model trained successfully!");
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+ 
 });
 
 router.get("/hygiene-prediction", async (req, res) => {
@@ -192,11 +184,7 @@ router.get("/hygiene-prediction", async (req, res) => {
 
       processedRestaurants.add(restaurantId);
     }
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+   
     res.status(200).json(restaurantData);
   } catch (error) {
     console.error(error);
@@ -251,11 +239,7 @@ router.get("/hygienereport/:id", async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+ 
 });
 router.get("/accuracy", async (req, res) => {
   try {
@@ -343,11 +327,7 @@ router.get("/accuracy", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Error calculating accuracy" });
   }
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+
 });
 
 module.exports = router;

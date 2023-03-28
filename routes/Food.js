@@ -18,11 +18,7 @@ router.post("/add-menu", async (req, res) => {
       restaurantId: req.body.restaurantId,
       isDeleted: 0,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+   
     res.status(201).json(menus);
   } catch (err) {
     res.status(500).json(err);
@@ -32,11 +28,7 @@ router.post("/add-menu", async (req, res) => {
 router.get(`/single-menu/:id`, async (req, res) => {
   try {
     const singleMenu = await menu.findOne({ _id: req.params.id, isDeleted: 0 });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+ 
     res.status(200).json(singleMenu);
   } catch (err) {
     res.status(500).json(err);
@@ -49,11 +41,7 @@ router.get(`/all-menu/:id`, async (req, res) => {
       restaurantId: req.params.id,
       isDeleted: 0,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+   
     res.status(200).json(allMenu);
   } catch (err) {
     res.status(500).json(err);
@@ -69,11 +57,7 @@ router.put("/delete/:id", async (req, res) => {
     const allMenu = await menu.find({
       isDeleted: 0,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+   
     res.status(200).json(allMenu);
   } catch (err) {
     return res.status(500).json(err);
@@ -94,11 +78,7 @@ router.post("/available/:id", async (req, res) => {
       isDeleted: 0,
       restaurantId: req.body.restaurantId,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+  
     res.status(200).json(allMenu);
   } catch (err) {
     return res.status(500).json(err);
@@ -121,11 +101,7 @@ router.put("/update/:id", async (req, res) => {
         category: req.body.category,
       });
     }
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+   
     res.status(200).json("updated");
   } catch (err) {
     return res.status(500).json(err);

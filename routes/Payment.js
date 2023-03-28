@@ -80,11 +80,7 @@ router.post("/verify", async (req, res) => {
       const updatePayment = await Payment.findByIdAndUpdate(pay_id, {
         status: "caputured",
       });
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-      );
+      
       return res.status(200).json({
         message: "Payment verified successfully and cart deleted successfully",
       });
@@ -159,11 +155,7 @@ router.get("/total-amount-per-month", async (req, res) => {
       month: months[payment._id.month - 1],
       totalAmount: payment.totalAmount,
     }));
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+   
     res.status(200).json({ payments: paymentsWithMonthName });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });

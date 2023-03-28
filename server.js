@@ -31,7 +31,7 @@ app.use(
       "https://deliorder.onrender.com"
     ],
     credentials: true,
-    optionsSuccessStatus: 200
+    
   })
 );
 
@@ -47,11 +47,7 @@ mongoose
 
   .catch((err) => console.log(err.message));
   app.get("/", async (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+   
     res.send("API is running");
   });
 app.use("/auth", authRoutes);

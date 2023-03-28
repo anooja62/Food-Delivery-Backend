@@ -13,11 +13,7 @@ router.post("/add-message", async (req, res) => {
     });
 
     const msg = await newMessage.save();
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+  
     res.status(201).json(msg);
   } catch (err) {
     res.status(500).json(err);
@@ -30,11 +26,7 @@ router.get(`/single-msg/:id`, async (req, res) => {
       _id: req.params.id,
       isReplyed: 0,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+    
     res.status(200).json(singleMessage);
   } catch (err) {
     res.status(500).json(err);
@@ -47,11 +39,7 @@ router.get(`/single-reply/:id`, async (req, res) => {
       _id: req.params.id,
       isReplyed: 1,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+   
     res.status(200).json(singleReply);
   } catch (err) {
     res.status(500).json(err);
@@ -64,11 +52,7 @@ router.get("/all-Message", async (req, res) => {
     const allMessage = await message.find({
       isReplyed: 0,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+ 
     res.status(200).json(allMessage);
   } catch (err) {
     res.status(500).json(err);
@@ -80,11 +64,7 @@ router.get("/get-reply/:id", async (req, res) => {
     const allMessage = await message.find({restaurantId:req.params.id,
       isReplyed: 1,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+   
     res.status(200).json(allMessage);
   } catch (err) {
     res.status(500).json(err);
@@ -100,11 +80,7 @@ router.put("/reply/:id", async (req, res) => {
     const allMessage = await message.find({
       isReplyed: 0,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+   
     res.status(200).json(allMessage);
   } catch (err) {
     return res.status(500).json(err);

@@ -16,11 +16,7 @@ router.post("/review", async (req, res) => {
       restaurantId: req.body.restaurantId,
       isApproved: 0,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+  
     res.status(201).json(allFoodreview);
   } catch (err) {
     res.status(500).json(err);
@@ -34,11 +30,7 @@ router.get(`/all-foodreview/:id`, async (req, res) => {
       restaurantId: req.params.id,
       isApproved: 0,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+  
     res.status(200).json(allFoodreview);
   } catch (err) {
     res.status(500).json(err);

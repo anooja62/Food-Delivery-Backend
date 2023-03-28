@@ -25,11 +25,7 @@ router.post("/register", async (req, res) => {
 
     if (!userEmail) {
       const users = await newUser.save();
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-      );
+   
       res.status(201).json(users);
     }
   } catch (err) {
@@ -84,12 +80,6 @@ router.put("/update/:id", async (req, res) => {
       password: hashedPassword,
     });
 
-    //save user return response
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
     res.status(201).json("updated");
   } catch (err) {
     res.status(500).json(err);
@@ -102,11 +92,7 @@ router.get("/all-user", async (req, res) => {
     const allUser = await user.find({
       isBlocked: 0,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+   
     res.status(200).json(allUser);
   } catch (err) {
     res.status(500).json(err);
@@ -121,11 +107,7 @@ router.put("/block/:id", async (req, res) => {
     const allUser = await user.find({
       isBlocked: 0,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+ 
     res.status(200).json(allUser);
   } catch (err) {
     return res.status(500).json(err);
@@ -172,11 +154,7 @@ router.put("/send-otp", async (req, res) => {
   } else {
     res.send({ code: 500, message: "Server err" });
   }
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+ 
 });
 
 //submit otp
@@ -202,11 +180,7 @@ router.put("/submit-otp", async (req, res) => {
     .catch((err) => {
       res.send({ code: 500, message: "otp is wrong" });
     });
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+
 });
 
 const months = [
@@ -253,11 +227,7 @@ router.get("/total-registered-users-per-month", async (req, res) => {
       year: year,
       count: user.count,
     }));
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
+  
 
     res.status(200).json({ users: usersWithMonthName });
   } catch (error) {
