@@ -53,7 +53,8 @@ router.post("/rest-login", async (req, res) => {
     }
 
     const { password, ...others } = rest._doc;
-
+res.cookie("restaurantId", others._id, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantName", others.name, { httpOnly: true, secure: true, sameSite: "none" });
     console.log("Sending data to frontend: ", others);
 
     res.status(200).json(others);
