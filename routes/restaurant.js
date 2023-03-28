@@ -57,15 +57,15 @@ res.header(
     }
 
     const { password, ...others } = rest._doc;
-    res.cookie("restaurantId", others._id, { httpOnly: true, secure: true, sameSite: "none" });
-    res.cookie("restaurantName", others.name, { httpOnly: true, secure: true, sameSite: "none" });
-    res.cookie("restaurantEmail", others.email, { httpOnly: true, secure: true, sameSite: "none" });
-    res.cookie("restaurantPhone", others.phone, { httpOnly: true, secure: true, sameSite: "none" });
-    res.cookie("restaurantLicense", others.license, { httpOnly: true, secure: true, sameSite: "none" });
-    res.cookie("restaurantimgUrl", others.imgUrl, { httpOnly: true, secure: true, sameSite: "none" });
-    res.cookie("restaurantAbout", others.about, { httpOnly: true, secure: true, sameSite: "none" });
-    res.cookie("restaurantOwnername", others.ownername, { httpOnly: true, secure: true, sameSite: "none" });
-    res.cookie("restaurantOwnerphone", others.ownerphone, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantid", others._id, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantname", others.name, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantemail", others.email, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantphone", others.phone, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantlicense", others.license, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantimgurl", others.imgUrl, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantabout", others.about, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantownername", others.ownername, { httpOnly: true, secure: true, sameSite: "none" });
+    res.cookie("restaurantownerphone", others.ownerphone, { httpOnly: true, secure: true, sameSite: "none" });
     
     res.status(200).json(others);
     
