@@ -59,6 +59,11 @@ router.put("/deliveryboy-pw-update", async (req, res) => {
 });
 //deliveryboy login
 router.post("/delivery-login", async (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   console.log(req.body);
   try {
     const deliveryboys = await deliveryboy.findOne({ email: req.body.email });
@@ -72,17 +77,14 @@ router.post("/delivery-login", async (req, res) => {
       !validPassword && res.status(400).json("wrong password");
       if (validPassword) {
         const { password, ...others } = deliveryboys._doc;
+        
         res.status(200).json(others);
       }
     }
   } catch (err) {
     res.status(500).send({ message: err });
   }
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+ 
 });
 //deliveryboy update
 router.put("/update-delivery/:id", async (req, res) => {
