@@ -33,8 +33,9 @@ router.post("/add-restaurent", async (req, res) => {
 });
 
 router.post("/rest-login", async (req, res) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
-  res.header("Access-Control-Allow-Credentials", true); // enable cookies
+ res.setHeader("Access-Control-Allow-Origin", "https://deliorder.onrender.com");
+res.setHeader("Access-Control-Allow-Credentials", true);
+
 
   try {
     const rest = await restaurant.findOne({ email: req.body.email });
