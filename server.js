@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(
   Cors({
     origin: [
-      "https://localhost:3000",
+      "http://localhost:3000",
       "https://deliorder.onrender.com"
     ],
     credentials: true,

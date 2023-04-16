@@ -1,38 +1,40 @@
+/** @format */
+
 const mongoose = require("mongoose");
 
-const paymentSchema = mongoose.Schema({
-  userId: {
-    type: String,
-  
-    
-  },
-  amount: {
-    type: Number,
-    required: true,
-  },
+const paymentSchema = mongoose.Schema(
+  {
+    userId: {
+      type: String,
+    },
+    amount: {
+      type: Number,
+      required: true,
+    },
 
-  order_id: {
-    type: String,
+    order_id: {
+      type: String,
+    },
+    payment_id: {
+      type: String,
+    },
+    cart_id: {
+      type: String,
+    },
+    address_id: {
+      type: String,
+    },
+    status: {
+      type: String,
+    },
+    method: {
+      type: String,
+    },
+    isPaymentDone: {
+      type: Number,
+    },
   },
-  payment_id:{
-    type:String,
-  },
-  cart_id:{
-   type:String,
-  },
-  address_id:{
-    type:String
-  },
-  status:{
-    type:String
-  },
-  method:{
-    type:String
-  },
-  isPaymentDone:{
-    type:Number
-  }
-
-},{timestamps: true});
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Payment", paymentSchema);
