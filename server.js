@@ -28,14 +28,12 @@ dotenv.config();
 app.use(express.json());
 app.use(
   Cors({
-    origin: [
-      "http://localhost:3000",
-      "https://deliorder.onrender.com",
-     
-    ],
+    origin: "*",
     credentials: true,
   })
 );
+
+
 
 const MONGO_URI =
   "mongodb+srv://admin:Uous7v8k5FVxNu9x@cluster0.fyfxtkt.mongodb.net/?retryWrites=true&w=majority";
