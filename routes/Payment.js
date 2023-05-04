@@ -31,11 +31,7 @@ router.post("/orders", async (req, res) => {
         console.log(error);
         return res.status(500).json({ message: "Something Went Wrong!" });
       }
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-      );
+     
       res.status(200).json({ data: order });
       orderId = order.id;
 
