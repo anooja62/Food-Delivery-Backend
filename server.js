@@ -28,7 +28,11 @@ dotenv.config();
 app.use(express.json());
 app.use(
   Cors({
-    origin: "*",
+    origin: [
+      "http://localhost:3000",
+      "https://deliorder.onrender.com",
+     
+    ],
     credentials: true,
   })
 );
