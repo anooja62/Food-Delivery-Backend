@@ -27,7 +27,7 @@ const restaurantSchema = mongoose.Schema({
   address: {
     type: String,
   },
- 
+
   isRejected: {
     type: Number,
     default: 0,
@@ -57,13 +57,13 @@ const restaurantSchema = mongoose.Schema({
   restImg: {
     type: String,
   },
-  sentimentScore:{
-    type:Number,
-    default:1,
+  sentimentScore: {
+    type: Number,
+    default: 1,
   },
-  isScheduledForInspection:{
-    type:Boolean,
-  }
+  isScheduledForInspection: {
+    type: Boolean,
+  },
 });
 
 restaurantSchema.index({ address: "text" });

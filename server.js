@@ -28,7 +28,8 @@ app.use(
   Cors({
     origin: [
       "http://localhost:3000",
-      "https://deliorder.onrender.com"
+      "https://deliorder.onrender.com",
+      "https://us1.locationiq.com"
     ],
     credentials: true,
     
