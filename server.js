@@ -29,7 +29,8 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://deliorder.onrender.com",
-      "https://us1.locationiq.com"
+      `https://us1.locationiq.com/v1/search.php?key=pk.de89a66c75d2c7e2838b70033a082722&q=${address}&format=json`
+     
     ],
     credentials: true,
     
