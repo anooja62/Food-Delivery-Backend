@@ -19,11 +19,7 @@ router.post("/add-restaurent", async (req, res) => {
 
     if (!restEmail) {
       const rest = await newRestaurent.save();
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-      );
+   
       res.status(201).json(rest);
     }
   } catch (err) {
